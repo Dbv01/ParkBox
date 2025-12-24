@@ -1,0 +1,1177 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GarageNow — Гараж на час</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        /* Header */
+        header {
+            background: linear-gradient(135deg, #1a3a8f 0%, #2d5cc2 100%);
+            color: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+        
+        .logo i {
+            color: #ffd700;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+        
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            transition: background 0.3s;
+        }
+        
+        nav a:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+        
+        .auth-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .btn {
+            padding: 0.6rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border: 2px solid white;
+            color: white;
+        }
+        
+        .btn-primary {
+            background: #ff6b35;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #e55a2b;
+            transform: translateY(-2px);
+        }
+        
+        .btn-outline:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Hero Section */
+        .hero {
+            padding: 4rem 2rem;
+            background: linear-gradient(rgba(26, 58, 143, 0.9), rgba(45, 92, 194, 0.8)), url('https://images.unsplash.com/photo-1558618666-fcd25c85cd64?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            text-align: center;
+        }
+        
+        .hero-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .hero p {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+        
+        /* Search Section */
+        .search-section {
+            max-width: 1200px;
+            margin: -2rem auto 2rem;
+            padding: 0 2rem;
+        }
+        
+        .search-card {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        }
+        
+        .search-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .search-header h2 {
+            color: #1a3a8f;
+        }
+        
+        .search-filters {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .filter-group label {
+            font-weight: 600;
+            color: #555;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        select, input {
+            padding: 0.8rem 1rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            background: white;
+        }
+        
+        .checkboxes {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            margin-top: 0.5rem;
+        }
+        
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .search-button {
+            width: 100%;
+            padding: 1rem;
+            font-size: 1.1rem;
+            margin-top: 1rem;
+        }
+        
+        /* Map Section */
+        .map-section {
+            max-width: 1200px;
+            margin: 3rem auto;
+            padding: 0 2rem;
+        }
+        
+        .map-container {
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            height: 500px;
+            margin-top: 1.5rem;
+        }
+        
+        #map {
+            height: 100%;
+            width: 100%;
+        }
+        
+        /* Garages List */
+        .garages-section {
+            max-width: 1200px;
+            margin: 3rem auto;
+            padding: 0 2rem;
+        }
+        
+        .section-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        
+        .section-title h2 {
+            color: #1a3a8f;
+            font-size: 2rem;
+        }
+        
+        .garages-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+        
+        .garage-card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .garage-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .garage-image {
+            height: 200px;
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .garage-content {
+            padding: 1.5rem;
+        }
+        
+        .garage-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+        
+        .garage-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #1a3a8f;
+        }
+        
+        .garage-price {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #ff6b35;
+        }
+        
+        .garage-price span {
+            font-size: 0.9rem;
+            color: #777;
+            font-weight: 400;
+        }
+        
+        .garage-location {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #666;
+            margin-bottom: 1rem;
+        }
+        
+        .garage-features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .feature-tag {
+            background: #f0f5ff;
+            color: #1a3a8f;
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .feature-tag.water {
+            background: #e6f7ff;
+            color: #0066cc;
+        }
+        
+        .feature-tag.electricity {
+            background: #fff7e6;
+            color: #cc6600;
+        }
+        
+        .garage-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .rating {
+            color: #ffc107;
+            font-weight: 600;
+        }
+        
+        .btn-small {
+            padding: 0.6rem 1.2rem;
+            font-size: 0.9rem;
+        }
+        
+        /* How It Works */
+        .how-it-works {
+            background: #f0f5ff;
+            padding: 4rem 2rem;
+            margin-top: 4rem;
+        }
+        
+        .steps-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2.5rem;
+        }
+        
+        .step {
+            text-align: center;
+            padding: 2rem;
+        }
+        
+        .step-icon {
+            background: #1a3a8f;
+            color: white;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            font-size: 2rem;
+        }
+        
+        .step h3 {
+            margin-bottom: 1rem;
+            color: #1a3a8f;
+        }
+        
+        /* Footer */
+        footer {
+            background: #1a3a8f;
+            color: white;
+            padding: 3rem 2rem 1.5rem;
+        }
+        
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .footer-column h3 {
+            margin-bottom: 1.5rem;
+            font-size: 1.2rem;
+        }
+        
+        .footer-column ul {
+            list-style: none;
+        }
+        
+        .footer-column ul li {
+            margin-bottom: 0.8rem;
+        }
+        
+        .footer-column a {
+            color: #ccc;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-column a:hover {
+            color: white;
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #aaa;
+            font-size: 0.9rem;
+        }
+        
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 500px;
+            padding: 2rem;
+            position: relative;
+        }
+        
+        .close-modal {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #777;
+        }
+        
+        .modal-header {
+            margin-bottom: 1.5rem;
+        }
+        
+        .modal-header h2 {
+            color: #1a3a8f;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-container {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            nav ul {
+                gap: 1rem;
+            }
+            
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+            
+            .search-filters {
+                grid-template-columns: 1fr;
+            }
+            
+            .garages-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-container">
+            <div class="logo">
+                <i class="fas fa-warehouse"></i>
+                <span>GarageNow</span>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#search">Найти гараж</a></li>
+                    <li><a href="#how-it-works">Как это работает</a></li>
+                    <li><a href="#garages">Каталог</a></li>
+                    <li><a href="#" id="become-owner-link">Сдать гараж</a></li>
+                </ul>
+            </nav>
+            <div class="auth-buttons">
+                <button class="btn btn-outline" id="login-btn">
+                    <i class="fas fa-sign-in-alt"></i>Войти
+                </button>
+                <button class="btn btn-primary" id="register-btn">
+                    <i class="fas fa-user-plus"></i>Регистрация
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-container">
+            <h1>Гараж на час для любых задач</h1>
+            <p>Найдите свободный гараж рядом с вами для парковки, ремонта, мойки или хранения вещей. Арендуйте на час, день или неделю.</p>
+            <button class="btn btn-primary" style="font-size: 1.2rem; padding: 1rem 2.5rem;">
+                <i class="fas fa-search"></i>Найти гараж сейчас
+            </button>
+        </div>
+    </section>
+
+    <!-- Search Section -->
+    <section class="search-section" id="search">
+        <div class="search-card">
+            <div class="search-header">
+                <h2>Найдите идеальный гараж</h2>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="available-now" checked>
+                    <label for="available-now">Свободно прямо сейчас</label>
+                </div>
+            </div>
+            
+            <div class="search-filters">
+                <div class="filter-group">
+                    <label for="location"><i class="fas fa-map-marker-alt"></i>Район или адрес</label>
+                    <input type="text" id="location" placeholder="Введите район, метро или адрес" value="Москва">
+                </div>
+                
+                <div class="filter-group">
+                    <label for="date"><i class="fas fa-calendar-alt"></i>Дата и время</label>
+                    <input type="datetime-local" id="date" value="2024-05-20T10:00">
+                </div>
+                
+                <div class="filter-group">
+                    <label for="duration"><i class="fas fa-clock"></i>Длительность</label>
+                    <select id="duration">
+                        <option value="1">1 час</option>
+                        <option value="2" selected>2 часа</option>
+                        <option value="4">4 часа</option>
+                        <option value="8">8 часов (день)</option>
+                        <option value="24">24 часа (сутки)</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="filter-group">
+                <label><i class="fas fa-tools"></i>Оснащение гаража</label>
+                <div class="checkboxes">
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="water" checked>
+                        <label for="water">Вода</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="electricity" checked>
+                        <label for="electricity">Электричество</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="lighting">
+                        <label for="lighting">Хорошее освещение</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="heating">
+                        <label for="heating">Отопление</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="tools">
+                        <label for="tools">Инструменты</label>
+                    </div>
+                </div>
+            </div>
+            
+            <button class="btn btn-primary search-button" id="search-btn">
+                <i class="fas fa-search"></i>Показать 12 свободных гаражей
+            </button>
+        </div>
+    </section>
+
+    <!-- Map Section -->
+    <section class="map-section">
+        <div class="section-title">
+            <h2>Гаражи на карте</h2>
+            <div>
+                <button class="btn btn-outline" style="background: white; border-color: #ddd;">
+                    <i class="fas fa-list"></i>Список
+                </button>
+                <button class="btn btn-primary">
+                    <i class="fas fa-map"></i>Карта
+                </button>
+            </div>
+        </div>
+        <div class="map-container">
+            <div id="map"></div>
+        </div>
+    </section>
+
+    <!-- Garages List -->
+    <section class="garages-section" id="garages">
+        <div class="section-title">
+            <h2>Доступные гаражи рядом с вами</h2>
+            <div class="filter-group">
+                <label for="sort">Сортировать:</label>
+                <select id="sort" style="width: auto;">
+                    <option value="price">По цене (сначала дешевые)</option>
+                    <option value="rating">По рейтингу</option>
+                    <option value="distance">По расстоянию</option>
+                </select>
+            </div>
+        </div>
+        
+        <div class="garages-grid" id="garages-list">
+            <!-- Garage cards will be populated by JavaScript -->
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section class="how-it-works" id="how-it-works">
+        <div style="max-width: 1200px; margin: 0 auto; text-align: center; margin-bottom: 3rem;">
+            <h2 style="color: white; font-size: 2.5rem; margin-bottom: 1rem;">Как это работает</h2>
+            <p style="color: rgba(255,255,255,0.9); font-size: 1.2rem; max-width: 700px; margin: 0 auto;">Арендуйте гараж в три простых шага</p>
+        </div>
+        
+        <div class="steps-container">
+            <div class="step">
+                <div class="step-icon">
+                    <i class="fas fa-search-location"></i>
+                </div>
+                <h3>1. Найдите гараж</h3>
+                <p>Укажите местоположение, дату и нужные удобства. На карте появятся все доступные гаражи поблизости.</p>
+            </div>
+            
+            <div class="step">
+                <div class="step-icon">
+                    <i class="fas fa-lock-open"></i>
+                </div>
+                <h3>2. Забронируйте доступ</h3>
+                <p>Выберите подходящий вариант и оплатите онлайн. Получите пин-код для умного замка на указанный телефон.</p>
+            </div>
+            
+            <div class="step">
+                <div class="step-icon">
+                    <i class="fas fa-car"></i>
+                </div>
+                <h3>3. Используйте гараж</h3>
+                <p>Приезжайте в указанное время, откройте гараж с помощью пин-кода. После использования просто закройте ворота.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-column">
+                <h3>GarageNow</h3>
+                <p>Сервис аренды гаражей на час. Удобно, безопасно, доступно.</p>
+                <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+                    <a href="#" style="color: white; font-size: 1.2rem;"><i class="fab fa-vk"></i></a>
+                    <a href="#" style="color: white; font-size: 1.2rem;"><i class="fab fa-telegram"></i></a>
+                    <a href="#" style="color: white; font-size: 1.2rem;"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+            
+            <div class="footer-column">
+                <h3>Для клиентов</h3>
+                <ul>
+                    <li><a href="#">Как это работает</a></li>
+                    <li><a href="#">Частые вопросы</a></li>
+                    <li><a href="#">Отзывы</a></li>
+                    <li><a href="#">Помощь</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-column">
+                <h3>Для владельцев</h3>
+                <ul>
+                    <li><a href="#">Сдать гараж</a></li>
+                    <li><a href="#">Тарифы</a></li>
+                    <li><a href="#">Безопасность</a></li>
+                    <li><a href="#">Партнёрская программа</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-column">
+                <h3>Контакты</h3>
+                <ul>
+                    <li><i class="fas fa-phone"></i> 8 (800) 123-45-67</li>
+                    <li><i class="fas fa-envelope"></i> support@garagenow.ru</li>
+                    <li><i class="fas fa-map-marker-alt"></i> Москва, ул. Примерная, 15</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="copyright">
+            © 2024 GarageNow. Все права защищены.
+        </div>
+    </footer>
+
+    <!-- Login Modal -->
+    <div class="modal" id="login-modal">
+        <div class="modal-content">
+            <button class="close-modal" id="close-login">&times;</button>
+            <div class="modal-header">
+                <h2>Вход в аккаунт</h2>
+            </div>
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="login-email">Email</label>
+                    <input type="email" id="login-email" placeholder="your@email.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="login-password">Пароль</label>
+                    <input type="password" id="login-password" placeholder="Введите пароль" required>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Войти</button>
+            </form>
+            <p style="text-align: center; margin-top: 1rem;">Нет аккаунта? <a href="#" id="switch-to-register">Зарегистрироваться</a></p>
+        </div>
+    </div>
+
+    <!-- Register Modal -->
+    <div class="modal" id="register-modal">
+        <div class="modal-content">
+            <button class="close-modal" id="close-register">&times;</button>
+            <div class="modal-header">
+                <h2>Регистрация</h2>
+            </div>
+            <form id="register-form">
+                <div class="form-group">
+                    <label for="register-name">Имя</label>
+                    <input type="text" id="register-name" placeholder="Ваше имя" required>
+                </div>
+                <div class="form-group">
+                    <label for="register-email">Email</label>
+                    <input type="email" id="register-email" placeholder="your@email.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="register-phone">Телефон</label>
+                    <input type="tel" id="register-phone" placeholder="+7 (999) 123-45-67" required>
+                </div>
+                <div class="form-group">
+                    <label for="register-password">Пароль</label>
+                    <input type="password" id="register-password" placeholder="Не менее 6 символов" required>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Зарегистрироваться</button>
+            </form>
+            <p style="text-align: center; margin-top: 1rem;">Уже есть аккаунт? <a href="#" id="switch-to-login">Войти</a></p>
+        </div>
+    </div>
+
+    <!-- Booking Modal -->
+    <div class="modal" id="booking-modal">
+        <div class="modal-content">
+            <button class="close-modal" id="close-booking">&times;</button>
+            <div class="modal-header">
+                <h2>Бронирование гаража</h2>
+            </div>
+            <div id="booking-content">
+                <!-- Dynamic content will be inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample data for garages
+        const garages = [
+            {
+                id: 1,
+                title: "Тёплый гараж в ЦАО",
+                price: 300,
+                rating: 4.8,
+                reviews: 24,
+                location: "Центральный округ, 5 мин от метро",
+                image: "https://images.unsplash.com/photo-1621967299229-c6e7085b9b73?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+                features: ["вода", "электричество", "отопление", "освещение"],
+                coordinates: [55.7558, 37.6173]
+            },
+            {
+                id: 2,
+                title: "Современный бокс с инструментами",
+                price: 450,
+                rating: 4.9,
+                reviews: 42,
+                location: "ЮЗАО, 7 мин от метро",
+                image: "https://images.unsplash.com/photo-1549399542-7e3f8b79c341?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+                features: ["вода", "электричество", "инструменты", "мойка"],
+                coordinates: [55.6540, 37.5980]
+            },
+            {
+                id: 3,
+                title: "Просторный гараж для микроавтобуса",
+                price: 550,
+                rating: 4.7,
+                reviews: 18,
+                location: "САО, 10 мин от метро",
+                image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+                features: ["электричество", "отопление", "видеонаблюдение"],
+                coordinates: [55.8030, 37.5250]
+            },
+            {
+                id: 4,
+                title: "Эконом-вариант в спальном районе",
+                price: 200,
+                rating: 4.5,
+                reviews: 31,
+                location: "ВАО, 3 мин от метро",
+                image: "https://images.unsplash.com/photo-1600573472592-46d7c1c10dc2?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+                features: ["электричество", "освещение"],
+                coordinates: [55.7870, 37.7660]
+            },
+            {
+                id: 5,
+                title: "Премиум бокс с мойкой",
+                price: 700,
+                rating: 4.9,
+                reviews: 56,
+                location: "ЗАО, 5 мин от ТТК",
+                image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+                features: ["вода", "электричество", "отопление", "мойка", "инструменты"],
+                coordinates: [55.7360, 37.4660]
+            },
+            {
+                id: 6,
+                title: "Гараж с подъёмником",
+                price: 800,
+                rating: 5.0,
+                reviews: 29,
+                location: "ЮАО, 8 мин от метро",
+                image: "https://images.unsplash.com/photo-1551524165-6b6e5a6166f3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+                features: ["вода", "электричество", "подъёмник", "инструменты"],
+                coordinates: [55.6140, 37.7150]
+            }
+        ];
+
+        // Initialize map
+        let map;
+        let markers = [];
+        
+        function initMap() {
+            map = L.map('map').setView([55.7558, 37.6173], 11);
+            
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors'
+            }).addTo(map);
+            
+            // Add markers for each garage
+            garages.forEach(garage => {
+                const marker = L.marker(garage.coordinates)
+                    .addTo(map)
+                    .bindPopup(`
+                        <strong>${garage.title}</strong><br>
+                        ${garage.location}<br>
+                        <b>${garage.price} ₽/час</b><br>
+                        <button onclick="showBookingModal(${garage.id})" class="btn btn-primary" style="margin-top: 5px; padding: 5px 10px; font-size: 12px;">
+                            Забронировать
+                        </button>
+                    `);
+                markers.push(marker);
+            });
+        }
+
+        // Render garage cards
+        function renderGarages() {
+            const container = document.getElementById('garages-list');
+            container.innerHTML = '';
+            
+            garages.forEach(garage => {
+                const card = document.createElement('div');
+                card.className = 'garage-card';
+                card.innerHTML = `
+                    <div class="garage-image" style="background-image: url('${garage.image}')"></div>
+                    <div class="garage-content">
+                        <div class="garage-header">
+                            <div class="garage-title">${garage.title}</div>
+                            <div class="garage-price">${garage.price} ₽<span>/час</span></div>
+                        </div>
+                        <div class="garage-location">
+                            <i class="fas fa-map-marker-alt"></i>
+                            ${garage.location}
+                        </div>
+                        <div class="garage-features">
+                            ${garage.features.map(feature => {
+                                let icon = 'fas fa-check';
+                                let className = 'feature-tag';
+                                if (feature === 'вода') {
+                                    icon = 'fas fa-tint';
+                                    className += ' water';
+                                } else if (feature === 'электричество') {
+                                    icon = 'fas fa-bolt';
+                                    className += ' electricity';
+                                } else if (feature === 'инструменты') {
+                                    icon = 'fas fa-tools';
+                                } else if (feature === 'мойка') {
+                                    icon = 'fas fa-car-wash';
+                                }
+                                return `<span class="${className}"><i class="${icon}"></i>${feature}</span>`;
+                            }).join('')}
+                        </div>
+                        <div class="garage-actions">
+                            <div class="rating">
+                                <i class="fas fa-star"></i> ${garage.rating} (${garage.reviews})
+                            </div>
+                            <button class="btn btn-primary btn-small" onclick="showBookingModal(${garage.id})">
+                                <i class="fas fa-calendar-check"></i>Забронировать
+                            </button>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // Modal functions
+        function showLoginModal() {
+            document.getElementById('login-modal').style.display = 'flex';
+        }
+
+        function showRegisterModal() {
+            document.getElementById('register-modal').style.display = 'flex';
+        }
+
+        function showBookingModal(garageId) {
+            const garage = garages.find(g => g.id === garageId);
+            const modal = document.getElementById('booking-modal');
+            const content = document.getElementById('booking-content');
+            
+            content.innerHTML = `
+                <h3>${garage.title}</h3>
+                <p><i class="fas fa-map-marker-alt"></i> ${garage.location}</p>
+                <p><strong>${garage.price} ₽/час</strong></p>
+                
+                <div class="form-group">
+                    <label>Дата и время начала</label>
+                    <input type="datetime-local" id="booking-date" value="2024-05-20T10:00" class="full-width">
+                </div>
+                
+                <div class="form-group">
+                    <label>Длительность аренды</label>
+                    <select id="booking-duration" class="full-width">
+                        <option value="1">1 час</option>
+                        <option value="2" selected>2 часа</option>
+                        <option value="4">4 часа</option>
+                        <option value="8">8 часов</option>
+                        <option value="24">24 часа</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Итого к оплате: <span id="booking-total">${garage.price * 2}</span> ₽</span></label>
+                </div>
+                
+                <button class="btn btn-primary" style="width: 100%;" onclick="confirmBooking(${garageId})">
+                    <i class="fas fa-lock"></i> Перейти к оплате
+                </button>
+            `;
+            
+            modal.style.display = 'flex';
+            
+            // Update total price when duration changes
+            document.getElementById('booking-duration').addEventListener('change', function() {
+                const duration = parseInt(this.value);
+                document.getElementById('booking-total').textContent = garage.price * duration;
+            });
+        }
+
+        function confirmBooking(garageId) {
+            const garage = garages.find(g => g.id === garageId);
+            const duration = document.getElementById('booking-duration').value;
+            const total = garage.price * duration;
+            
+            alert(`Бронирование подтверждено!\n\n${garage.title}\nСумма: ${total} ₽\n\nПосле оплаты вы получите SMS с кодом доступа.`);
+            closeModal('booking-modal');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize map and render garages
+            initMap();
+            renderGarages();
+            
+            // Modal buttons
+            document.getElementById('login-btn').addEventListener('click', showLoginModal);
+            document.getElementById('register-btn').addEventListener('click', showRegisterModal);
+            document.getElementById('become-owner-link').addEventListener('click', function(e) {
+                e.preventDefault();
+                alert('Функция "Сдать гараж" в разработке. Скоро будет доступна!');
+            });
+            
+            // Close buttons
+            document.getElementById('close-login').addEventListener('click', () => closeModal('login-modal'));
+            document.getElementById('close-register').addEventListener('click', () => closeModal('register-modal'));
+            document.getElementById('close-booking').addEventListener('click', () => closeModal('booking-modal'));
+            
+            // Switch between login and register modals
+            document.getElementById('switch-to-register').addEventListener('click', function(e) {
+                e.preventDefault();
+                closeModal('login-modal');
+                showRegisterModal();
+            });
+            
+            document.getElementById('switch-to-login').addEventListener('click', function(e) {
+                e.preventDefault();
+                closeModal('register-modal');
+                showLoginModal();
+            });
+            
+            // Form submissions
+            document.getElementById('login-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                alert('Вход выполнен успешно!');
+                closeModal('login-modal');
+            });
+            
+            document.getElementById('register-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                alert('Регистрация прошла успешно! Проверьте вашу почту для подтверждения.');
+                closeModal('register-modal');
+            });
+            
+            // Search button
+            document.getElementById('search-btn').addEventListener('click', function() {
+                const location = document.getElementById('location').value;
+                const duration = document.getElementById('duration').value;
+                const water = document.getElementById('water').checked;
+                const electricity = document.getElementById('electricity').checked;
+                
+                let filteredGarages = garages;
+                
+                // Apply filters (simplified for demo)
+                if (water) {
+                    filteredGarages = filteredGarages.filter(g => g.features.includes('вода'));
+                }
+                
+                if (electricity) {
+                    filteredGarages = filteredGarages.filter(g => g.features.includes('электричество'));
+                }
+                
+                // Re-render with filtered results
+                const container = document.getElementById('garages-list');
+                container.innerHTML = '';
+                
+                if (filteredGarages.length === 0) {
+                    container.innerHTML = `
+                        <div style="grid-column: 1/-1; text-align: center; padding: 3rem; background: white; border-radius: 16px;">
+                            <i class="fas fa-search" style="font-size: 3rem; color: #ccc; margin-bottom: 1rem;"></i>
+                            <h3>Ничего не найдено</h3>
+                            <p>Попробуйте изменить параметры поиска</p>
+                        </div>
+                    `;
+                } else {
+                    // Update button text
+                    this.innerHTML = `<i class="fas fa-search"></i>Показать ${filteredGarages.length} свободных гаражей`;
+                    
+                    // Update markers on map
+                    markers.forEach(marker => map.removeLayer(marker));
+                    markers = [];
+                    
+                    filteredGarages.forEach(garage => {
+                        const marker = L.marker(garage.coordinates)
+                            .addTo(map)
+                            .bindPopup(`<strong>${garage.title}</strong><br>${garage.price} ₽/час`);
+                        markers.push(marker);
+                        
+                        // Add card
+                        const card = document.createElement('div');
+                        card.className = 'garage-card';
+                        card.innerHTML = `
+                            <div class="garage-image" style="background-image: url('${garage.image}')"></div>
+                            <div class="garage-content">
+                                <div class="garage-header">
+                                    <div class="garage-title">${garage.title}</div>
+                                    <div class="garage-price">${garage.price} ₽<span>/час</span></div>
+                                </div>
+                                <div class="garage-location">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    ${garage.location}
+                                </div>
+                                <div class="garage-features">
+                                    ${garage.features.map(feature => `<span class="feature-tag"><i class="fas fa-check"></i>${feature}</span>`).join('')}
+                                </div>
+                                <div class="garage-actions">
+                                    <div class="rating">
+                                        <i class="fas fa-star"></i> ${garage.rating} (${garage.reviews})
+                                    </div>
+                                    <button class="btn btn-primary btn-small" onclick="showBookingModal(${garage.id})">
+                                        <i class="fas fa-calendar-check"></i>Забронировать
+                                    </button>
+                                </div>
+                            </div>
+                        `;
+                        container.appendChild(card);
+                    });
+                    
+                    // Adjust map view
+                    if (filteredGarages.length > 0) {
+                        const coordinates = filteredGarages.map(g => g.coordinates);
+                        const bounds = L.latLngBounds(coordinates);
+                        map.fitBounds(bounds);
+                    }
+                }
+            });
+            
+            // Sort functionality
+            document.getElementById('sort').addEventListener('change', function() {
+                const sortBy = this.value;
+                
+                if (sortBy === 'price') {
+                    garages.sort((a, b) => a.price - b.price);
+                } else if (sortBy === 'rating') {
+                    garages.sort((a, b) => b.rating - a.rating);
+                }
+                
+                renderGarages();
+            });
+            
+            // Close modals when clicking outside
+            window.addEventListener('click', function(e) {
+                if (e.target.classList.contains('modal')) {
+                    e.target.style.display = 'none';
+                }
+            });
+        });
+
+        // Make functions globally available
+        window.showBookingModal = showBookingModal;
+        window.confirmBooking = confirmBooking;
+        window.closeModal = closeModal;
+    </script>
+</body>
+</html>

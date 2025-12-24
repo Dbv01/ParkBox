@@ -3,126 +3,181 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ParkBox — Паркингшеринг в ЖК Москвы</title>
+    <title>ParkBox — Паркинг нового поколения</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #3b82f6;
-            --primary-dark: #2563eb;
-            --secondary: #10b981;
-            --accent: #f59e0b;
-            --dark: #1e293b;
-            --light: #f8fafc;
-            --gray: #64748b;
-            --gray-light: #e2e8f0;
-            --danger: #ef4444;
-            --success: #10b981;
-            --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            --hover-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            --primary: #2563EB;
+            --primary-light: #3B82F6;
+            --primary-dark: #1D4ED8;
+            --secondary: #06D6A0;
+            --accent: #FF6B6B;
+            --dark: #0F172A;
+            --dark-light: #1E293B;
+            --light: #F8FAFC;
+            --gray: #64748B;
+            --gray-light: #E2E8F0;
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --glass-bg: rgba(255, 255, 255, 0.08);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
+            --shadow-md: 0 10px 30px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.12);
+            --radius-sm: 12px;
+            --radius-md: 16px;
+            --radius-lg: 24px;
+            --radius-xl: 32px;
         }
         
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-family: 'Inter', -apple-system, sans-serif;
+            -webkit-tap-highlight-color: transparent;
         }
         
         body {
             background-color: var(--light);
             color: var(--dark);
             line-height: 1.6;
+            font-weight: 400;
+            overflow-x: hidden;
+            min-height: 100vh;
         }
         
-        /* Header */
+        /* Header - Мобильная версия */
         header {
-            background: white;
-            padding: 1rem 2rem;
-            box-shadow: var(--card-shadow);
-            position: sticky;
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            padding: 1rem;
+            position: fixed;
             top: 0;
+            left: 0;
+            right: 0;
             z-index: 1000;
-            backdrop-filter: blur(10px);
-            background: rgba(255, 255, 255, 0.98);
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            transition: all 0.3s;
         }
         
         .header-container {
-            max-width: 1400px;
+            max-width: 100%;
             margin: 0 auto;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            gap: 1rem;
         }
         
+        /* Логотип для мобильных */
         .logo {
             display: flex;
             align-items: center;
-            gap: 12px;
-            font-size: 1.8rem;
+            gap: 8px;
+            font-size: 1.4rem;
             font-weight: 800;
             color: var(--primary);
+            flex-shrink: 0;
         }
         
         .logo i {
+            font-size: 1.8rem;
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            font-size: 2rem;
         }
         
-        nav ul {
-            display: flex;
+        /* Навигация для мобильных */
+        nav {
+            display: none; /* Скрываем навигацию на мобильных */
+        }
+        
+        .mobile-menu-toggle {
+            display: block;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--dark);
+            cursor: pointer;
+            padding: 0.5rem;
+            z-index: 1001;
+        }
+        
+        .mobile-nav {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 80%;
+            max-width: 300px;
+            height: 100vh;
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            padding: 5rem 2rem 2rem;
+            z-index: 999;
+            transition: right 0.3s ease;
+            box-shadow: var(--shadow-lg);
+            overflow-y: auto;
+        }
+        
+        .mobile-nav.active {
+            right: 0;
+        }
+        
+        .mobile-nav ul {
             list-style: none;
-            gap: 2.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
         }
         
-        nav a {
+        .mobile-nav a {
             color: var(--dark);
             text-decoration: none;
-            font-weight: 500;
-            font-size: 0.95rem;
-            padding: 0.5rem 0;
-            position: relative;
-            transition: color 0.3s;
+            font-weight: 600;
+            font-size: 1.1rem;
+            padding: 0.75rem;
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            transition: all 0.2s;
         }
         
-        nav a:hover {
-            color: var(--primary);
+        .mobile-nav a:hover {
+            background: var(--primary-light);
+            color: white;
+            transform: translateX(5px);
         }
         
-        nav a::after {
-            content: '';
-            position: absolute;
-            width: 0;
-            height: 2px;
-            bottom: 0;
-            left: 0;
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
-            transition: width 0.3s;
-        }
-        
-        nav a:hover::after {
-            width: 100%;
+        .mobile-nav a i {
+            width: 24px;
+            text-align: center;
         }
         
         .auth-buttons {
             display: flex;
-            gap: 1rem;
+            gap: 0.75rem;
+            flex-shrink: 0;
         }
         
+        /* Кнопки для мобильных */
         .btn {
-            padding: 0.75rem 1.75rem;
-            border-radius: 12px;
+            padding: 0.75rem 1.25rem;
+            border-radius: var(--radius-md);
             font-weight: 600;
             cursor: pointer;
             border: none;
             transition: all 0.3s ease;
             display: inline-flex;
             align-items: center;
-            gap: 10px;
+            justify-content: center;
+            gap: 8px;
             font-size: 0.95rem;
+            white-space: nowrap;
+            min-height: 44px; /* Минимальный размер для касания */
         }
         
         .btn-outline {
@@ -135,57 +190,48 @@
             background: var(--primary);
             color: white;
             transform: translateY(-2px);
-            box-shadow: var(--card-shadow);
         }
         
         .btn-primary {
             background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             color: white;
-            box-shadow: var(--card-shadow);
+            box-shadow: var(--shadow-md);
         }
         
         .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: var(--hover-shadow);
+            box-shadow: var(--shadow-lg);
         }
         
         .btn-secondary {
-            background: linear-gradient(135deg, var(--secondary), #0da271);
+            background: linear-gradient(135deg, var(--secondary), #05C293);
             color: white;
-            box-shadow: var(--card-shadow);
+            box-shadow: var(--shadow-md);
         }
         
         .btn-secondary:hover {
             transform: translateY(-2px);
-            box-shadow: var(--hover-shadow);
+            box-shadow: var(--shadow-lg);
         }
         
         .btn-accent {
-            background: linear-gradient(135deg, var(--accent), #e07b00);
+            background: linear-gradient(135deg, var(--accent), #FF5252);
             color: white;
-            box-shadow: var(--card-shadow);
+            box-shadow: var(--shadow-md);
         }
         
         .btn-accent:hover {
             transform: translateY(-2px);
-            box-shadow: var(--hover-shadow);
+            box-shadow: var(--shadow-lg);
         }
         
-        .btn-success {
-            background: linear-gradient(135deg, var(--success), #0da271);
-            color: white;
-            box-shadow: var(--card-shadow);
-        }
-        
-        .btn-success:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--hover-shadow);
-        }
-        
-        /* Hero Section */
+        /* Hero Section - Мобильная версия */
         .hero {
-            padding: 6rem 2rem;
-            background: linear-gradient(135deg, rgba(59, 130, 246, 0.05) 0%, rgba(16, 185, 129, 0.05) 100%);
+            padding: 7rem 1.5rem 3rem;
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.05) 0%, rgba(6, 214, 160, 0.05) 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
             position: relative;
             overflow: hidden;
         }
@@ -193,87 +239,118 @@
         .hero::before {
             content: '';
             position: absolute;
-            width: 600px;
-            height: 600px;
+            width: 400px;
+            height: 400px;
             border-radius: 50%;
-            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(16, 185, 129, 0.1) 100%);
-            top: -300px;
-            right: -200px;
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.1) 0%, rgba(6, 214, 160, 0.1) 100%);
+            top: -200px;
+            right: -150px;
             z-index: 0;
         }
         
         .hero-container {
-            max-width: 1200px;
-            margin: 0 auto;
+            width: 100%;
+            max-width: 100%;
             position: relative;
             z-index: 1;
-            text-align: center;
+            text-align: left;
         }
         
         .hero h1 {
-            font-size: 3.5rem;
+            font-size: 2.5rem;
             margin-bottom: 1.5rem;
+            font-weight: 800;
+            line-height: 1.2;
             background: linear-gradient(135deg, var(--dark), var(--primary));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            font-weight: 800;
-            line-height: 1.2;
         }
         
         .hero p {
-            font-size: 1.25rem;
+            font-size: 1.1rem;
             color: var(--gray);
-            max-width: 700px;
-            margin: 0 auto 2.5rem;
+            margin-bottom: 2.5rem;
+            line-height: 1.7;
         }
         
         .hero-buttons {
             display: flex;
+            flex-direction: column;
             gap: 1rem;
-            justify-content: center;
-            flex-wrap: wrap;
+            margin-top: 2rem;
         }
         
-        /* Search Section */
+        .hero-buttons .btn {
+            width: 100%;
+            padding: 1rem;
+            font-size: 1rem;
+        }
+        
+        /* Search Section - Мобильная версия */
         .search-section {
-            max-width: 1200px;
-            margin: -4rem auto 4rem;
-            padding: 0 2rem;
+            width: calc(100% - 3rem);
+            margin: -2rem auto 3rem;
+            padding: 0;
             position: relative;
             z-index: 2;
         }
         
         .search-card {
-            background: white;
-            border-radius: 20px;
-            padding: 2.5rem;
-            box-shadow: var(--hover-shadow);
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            box-shadow: var(--shadow-lg);
             border: 1px solid var(--gray-light);
+            backdrop-filter: blur(10px);
         }
         
         .search-header {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
         }
         
         .search-header h2 {
             color: var(--dark);
-            font-size: 1.8rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: var(--radius-sm);
+            transition: background 0.2s;
+        }
+        
+        .checkbox-item:hover {
+            background: var(--gray-light);
+        }
+        
+        .checkbox-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            accent-color: var(--primary);
         }
         
         .search-filters {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
         }
         
         .filter-group {
             display: flex;
             flex-direction: column;
             gap: 0.5rem;
+            width: 100%;
         }
         
         .filter-group label {
@@ -286,99 +363,103 @@
         }
         
         select, input {
-            padding: 1rem 1.25rem;
+            padding: 1rem;
             border: 2px solid var(--gray-light);
-            border-radius: 12px;
+            border-radius: var(--radius-md);
             font-size: 1rem;
             background: white;
-            transition: border-color 0.3s;
+            transition: all 0.3s;
+            width: 100%;
+            -webkit-appearance: none;
+            appearance: none;
         }
         
         select:focus, input:focus {
             outline: none;
             border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
         }
         
         .checkboxes {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1.5rem;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.75rem;
             margin-top: 0.5rem;
-        }
-        
-        .checkbox-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            cursor: pointer;
-        }
-        
-        .checkbox-item input[type="checkbox"] {
-            width: 20px;
-            height: 20px;
-            border-radius: 6px;
-            cursor: pointer;
         }
         
         .search-button {
             width: 100%;
-            padding: 1.25rem;
+            padding: 1rem;
             font-size: 1.1rem;
-            border-radius: 12px;
-            margin-top: 1.5rem;
+            border-radius: var(--radius-md);
+            margin-top: 1rem;
         }
         
-        /* Map Section */
+        /* Map Section - Мобильная версия */
         .map-section {
-            max-width: 1400px;
-            margin: 5rem auto;
-            padding: 0 2rem;
+            width: calc(100% - 3rem);
+            margin: 2rem auto;
+            padding: 0;
         }
         
         .section-title {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
         }
         
         .section-title h2 {
             color: var(--dark);
-            font-size: 2.2rem;
+            font-size: 1.8rem;
             font-weight: 700;
+            line-height: 1.3;
         }
         
         .view-buttons {
             display: flex;
-            gap: 1rem;
+            gap: 0.5rem;
             background: var(--gray-light);
             padding: 4px;
-            border-radius: 12px;
+            border-radius: var(--radius-md);
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        .view-buttons::-webkit-scrollbar {
+            display: none;
         }
         
         .view-buttons button {
-            padding: 0.75rem 1.5rem;
-            border-radius: 10px;
+            padding: 0.75rem 1rem;
+            border-radius: var(--radius-sm);
             border: none;
             background: none;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
+            flex: 1;
+            min-width: fit-content;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
         }
         
         .view-buttons button.active {
             background: white;
             color: var(--primary);
-            box-shadow: var(--card-shadow);
+            box-shadow: var(--shadow-sm);
         }
         
         .map-container {
-            border-radius: 20px;
+            border-radius: var(--radius-lg);
             overflow: hidden;
-            box-shadow: var(--hover-shadow);
-            height: 550px;
-            margin-top: 1.5rem;
+            box-shadow: var(--shadow-lg);
+            height: 400px;
+            margin-top: 1rem;
             border: 1px solid var(--gray-light);
         }
         
@@ -392,36 +473,35 @@
             display: none !important;
         }
         
-        /* Residential Complexes Section */
+        /* Residential Complexes - Мобильная версия */
         .complexes-section {
-            max-width: 1400px;
-            margin: 5rem auto;
-            padding: 0 2rem;
+            width: calc(100% - 3rem);
+            margin: 3rem auto;
+            padding: 0;
         }
         
         .complexes-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
-            gap: 2rem;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
         }
         
         .complex-card {
-            background: white;
-            border-radius: 20px;
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
             overflow: hidden;
-            box-shadow: var(--card-shadow);
+            box-shadow: var(--shadow-md);
             transition: all 0.3s ease;
             border: 1px solid var(--gray-light);
             cursor: pointer;
         }
         
-        .complex-card:hover {
-            transform: translateY(-8px);
-            box-shadow: var(--hover-shadow);
+        .complex-card:active {
+            transform: scale(0.98);
         }
         
         .complex-image {
-            height: 220px;
+            height: 200px;
             background-size: cover;
             background-position: center;
             position: relative;
@@ -431,38 +511,40 @@
             position: absolute;
             top: 1rem;
             left: 1rem;
-            background: var(--success);
+            background: var(--secondary);
             color: white;
-            padding: 0.4rem 1rem;
+            padding: 0.5rem 1rem;
             border-radius: 20px;
             font-size: 0.85rem;
             font-weight: 600;
+            backdrop-filter: blur(10px);
         }
         
         .complex-content {
-            padding: 1.75rem;
+            padding: 1.5rem;
         }
         
         .complex-header {
             display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
+            flex-direction: column;
+            gap: 0.75rem;
             margin-bottom: 1rem;
         }
         
         .complex-title {
-            font-size: 1.4rem;
+            font-size: 1.3rem;
             font-weight: 700;
             color: var(--dark);
+            line-height: 1.3;
         }
         
         .complex-price {
-            font-size: 1.4rem;
+            font-size: 1.8rem;
             font-weight: 800;
             color: var(--primary);
             display: flex;
-            flex-direction: column;
             align-items: flex-end;
+            gap: 0.25rem;
         }
         
         .complex-price span {
@@ -474,7 +556,7 @@
         .complex-location {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 0.75rem;
             color: var(--gray);
             margin-bottom: 1.25rem;
             font-size: 0.95rem;
@@ -483,41 +565,43 @@
         .complex-features {
             display: flex;
             flex-wrap: wrap;
-            gap: 0.75rem;
+            gap: 0.5rem;
             margin-bottom: 1.5rem;
         }
         
         .feature-tag {
             background: var(--gray-light);
             color: var(--dark);
-            padding: 0.5rem 1rem;
-            border-radius: 12px;
-            font-size: 0.85rem;
-            display: flex;
+            padding: 0.5rem 0.75rem;
+            border-radius: var(--radius-sm);
+            font-size: 0.8rem;
+            display: inline-flex;
             align-items: center;
-            gap: 6px;
+            gap: 4px;
             font-weight: 500;
         }
         
         .feature-tag.primary {
-            background: rgba(59, 130, 246, 0.1);
+            background: rgba(37, 99, 235, 0.1);
             color: var(--primary);
         }
         
         .feature-tag.success {
-            background: rgba(16, 185, 129, 0.1);
-            color: var(--success);
+            background: rgba(6, 214, 160, 0.1);
+            color: var(--secondary);
         }
         
         .feature-tag.accent {
-            background: rgba(245, 158, 11, 0.1);
+            background: rgba(255, 107, 107, 0.1);
             color: var(--accent);
         }
         
         .complex-actions {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+            flex-direction: column;
+            gap: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--gray-light);
         }
         
         .rating {
@@ -525,188 +609,213 @@
             font-weight: 700;
             display: flex;
             align-items: center;
-            gap: 5px;
+            gap: 0.5rem;
+            font-size: 0.95rem;
+        }
+        
+        .rating span {
+            color: var(--gray);
+            font-weight: 400;
+            font-size: 0.9rem;
         }
         
         .btn-small {
-            padding: 0.75rem 1.5rem;
+            padding: 0.75rem 1rem;
             font-size: 0.9rem;
-            border-radius: 10px;
+            border-radius: var(--radius-md);
+            width: 100%;
         }
         
-        /* Parking spots modal */
+        /* Parking spots modal - Мобильная версия */
         .spots-container {
-            max-height: 400px;
+            max-height: 300px;
             overflow-y: auto;
             margin: 1rem 0;
+            -webkit-overflow-scrolling: touch;
         }
         
         .spot-item {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+            flex-direction: column;
+            gap: 1rem;
             padding: 1rem;
             border: 1px solid var(--gray-light);
-            border-radius: 10px;
+            border-radius: var(--radius-md);
             margin-bottom: 0.75rem;
             transition: all 0.2s;
         }
         
-        .spot-item:hover {
+        .spot-item:active {
             border-color: var(--primary);
-            background: rgba(59, 130, 246, 0.05);
+            background: rgba(37, 99, 235, 0.05);
         }
         
         .spot-info h4 {
             margin-bottom: 0.25rem;
+            font-size: 1.1rem;
         }
         
         .spot-info p {
             color: var(--gray);
             font-size: 0.9rem;
+            line-height: 1.5;
         }
         
-        /* How It Works */
+        /* How It Works - Мобильная версия */
         .how-it-works {
-            background: linear-gradient(135deg, rgba(59, 130, 246, 0.05) 0%, rgba(16, 185, 129, 0.05) 100%);
-            padding: 6rem 2rem;
-            margin-top: 5rem;
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.05) 0%, rgba(6, 214, 160, 0.05) 100%);
+            padding: 3rem 1.5rem;
+            margin-top: 3rem;
         }
         
         .how-it-works-container {
-            max-width: 1400px;
+            width: 100%;
             margin: 0 auto;
         }
         
         .how-it-works-header {
             text-align: center;
-            margin-bottom: 4rem;
+            margin-bottom: 2.5rem;
         }
         
         .how-it-works-header h2 {
-            font-size: 2.8rem;
+            font-size: 2rem;
             color: var(--dark);
             margin-bottom: 1rem;
             font-weight: 800;
+            line-height: 1.3;
         }
         
         .how-it-works-header p {
             color: var(--gray);
-            font-size: 1.2rem;
-            max-width: 700px;
-            margin: 0 auto;
+            font-size: 1.1rem;
+            line-height: 1.6;
         }
         
         .steps-container {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 3rem;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
         }
         
         .step {
-            background: white;
-            border-radius: 20px;
-            padding: 2.5rem;
-            text-align: center;
-            box-shadow: var(--card-shadow);
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            box-shadow: var(--shadow-md);
             transition: transform 0.3s;
             border: 1px solid var(--gray-light);
         }
         
-        .step:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--hover-shadow);
+        .step:active {
+            transform: scale(0.98);
         }
         
         .step-icon {
-            width: 80px;
-            height: 80px;
-            border-radius: 20px;
+            width: 60px;
+            height: 60px;
+            border-radius: var(--radius-lg);
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0 auto 2rem;
-            font-size: 2rem;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            margin: 0 auto 1.5rem;
+            font-size: 1.5rem;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             color: white;
         }
         
         .step h3 {
-            font-size: 1.5rem;
+            font-size: 1.3rem;
             margin-bottom: 1rem;
             color: var(--dark);
+            text-align: center;
         }
         
         .step p {
             color: var(--gray);
             margin-bottom: 1.5rem;
-            line-height: 1.7;
-        }
-        
-        /* Become Partner Section */
-        .become-partner {
-            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
-            color: white;
-            padding: 5rem 2rem;
-            margin-top: 5rem;
-            border-radius: 30px;
-            margin: 5rem 2rem;
-        }
-        
-        .partner-container {
-            max-width: 1200px;
-            margin: 0 auto;
+            line-height: 1.6;
             text-align: center;
         }
         
+        /* Become Partner Section - Мобильная версия */
+        .become-partner {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+            color: white;
+            padding: 3rem 1.5rem;
+            margin: 3rem 0;
+            border-radius: var(--radius-lg);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .partner-container {
+            width: 100%;
+            margin: 0 auto;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+        
         .become-partner h2 {
-            font-size: 2.5rem;
-            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+            line-height: 1.3;
         }
         
         .become-partner p {
-            font-size: 1.2rem;
-            margin-bottom: 2.5rem;
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
             opacity: 0.9;
-            max-width: 800px;
-            margin-left: auto;
-            margin-right: auto;
+            line-height: 1.6;
         }
         
         .partner-features {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-            margin: 3rem 0;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+            margin: 2rem 0;
         }
         
         .partner-feature {
             background: rgba(255, 255, 255, 0.1);
-            padding: 2rem;
-            border-radius: 15px;
+            padding: 1.5rem;
+            border-radius: var(--radius-lg);
             backdrop-filter: blur(10px);
         }
         
         .partner-feature i {
             font-size: 2rem;
             margin-bottom: 1rem;
-            color: var(--accent);
+            color: var(--secondary);
         }
         
-        /* Footer */
+        .partner-feature h3 {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .partner-feature p {
+            font-size: 0.95rem;
+            margin: 0;
+            opacity: 0.8;
+        }
+        
+        /* Footer - Мобильная версия */
         footer {
             background: var(--dark);
             color: white;
-            padding: 4rem 2rem 2rem;
+            padding: 3rem 1.5rem 2rem;
         }
         
         .footer-container {
-            max-width: 1400px;
+            width: 100%;
             margin: 0 auto;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 3rem;
-            margin-bottom: 3rem;
+            grid-template-columns: 1fr;
+            gap: 2.5rem;
+            margin-bottom: 2rem;
         }
         
         .footer-column h3 {
@@ -718,7 +827,8 @@
         .footer-column p {
             color: #94a3b8;
             margin-bottom: 1.5rem;
-            line-height: 1.7;
+            line-height: 1.6;
+            font-size: 0.95rem;
         }
         
         .footer-column ul {
@@ -726,7 +836,7 @@
         }
         
         .footer-column ul li {
-            margin-bottom: 0.8rem;
+            margin-bottom: 0.75rem;
         }
         
         .footer-column a {
@@ -735,7 +845,9 @@
             transition: color 0.3s;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 0.75rem;
+            font-size: 0.95rem;
+            padding: 0.25rem 0;
         }
         
         .footer-column a:hover {
@@ -749,20 +861,21 @@
         }
         
         .social-links a {
-            width: 40px;
-            height: 40px;
-            border-radius: 10px;
+            width: 44px;
+            height: 44px;
+            border-radius: var(--radius-md);
             background: rgba(255, 255, 255, 0.1);
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
             transition: all 0.3s;
+            font-size: 1.2rem;
         }
         
-        .social-links a:hover {
+        .social-links a:active {
             background: var(--primary);
-            transform: translateY(-3px);
+            transform: translateY(-2px);
         }
         
         .copyright {
@@ -771,9 +884,10 @@
             border-top: 1px solid rgba(255, 255, 255, 0.1);
             color: #94a3b8;
             font-size: 0.9rem;
+            line-height: 1.5;
         }
         
-        /* Modal */
+        /* Modal - Мобильная версия */
         .modal {
             display: none;
             position: fixed;
@@ -784,7 +898,7 @@
             background: rgba(0, 0, 0, 0.8);
             backdrop-filter: blur(5px);
             z-index: 2000;
-            align-items: center;
+            align-items: flex-end;
             justify-content: center;
             animation: fadeIn 0.3s ease;
         }
@@ -795,50 +909,59 @@
         }
         
         .modal-content {
-            background: white;
-            border-radius: 24px;
-            width: 90%;
-            max-width: 600px;
-            padding: 2.5rem;
+            background: var(--card-bg);
+            border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+            width: 100%;
+            max-height: 90vh;
+            padding: 2rem 1.5rem;
             position: relative;
             animation: slideUp 0.4s ease;
-            max-height: 90vh;
             overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
         }
         
         @keyframes slideUp {
-            from { transform: translateY(30px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
         }
         
         .close-modal {
             position: absolute;
-            top: 1.5rem;
-            right: 1.5rem;
+            top: 1rem;
+            right: 1rem;
             background: none;
             border: none;
-            font-size: 1.5rem;
+            font-size: 1.8rem;
             cursor: pointer;
             color: var(--gray);
             transition: color 0.3s;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1;
         }
         
-        .close-modal:hover {
-            color: var(--danger);
+        .close-modal:active {
+            color: var(--accent);
         }
         
         .modal-header {
-            margin-bottom: 2rem;
+            margin-bottom: 1.5rem;
+            padding-right: 3rem;
         }
         
         .modal-header h2 {
             color: var(--dark);
-            font-size: 1.8rem;
+            font-size: 1.5rem;
             font-weight: 700;
+            line-height: 1.3;
         }
         
         .form-group {
-            margin-bottom: 1.75rem;
+            margin-bottom: 1.5rem;
+            width: 100%;
         }
         
         .form-group label {
@@ -846,114 +969,150 @@
             margin-bottom: 0.75rem;
             font-weight: 600;
             color: var(--dark);
+            font-size: 0.95rem;
         }
         
-        /* Responsive */
-        @media (max-width: 1024px) {
-            .hero h1 {
-                font-size: 2.8rem;
-            }
-            
-            .complexes-grid {
-                grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            }
+        /* Notification - Мобильная версия */
+        .notification {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            left: 1rem;
+            background: white;
+            color: var(--dark);
+            padding: 1rem 1.25rem;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-lg);
+            border-left: 4px solid var(--secondary);
+            z-index: 3000;
+            animation: slideInMobile 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
         }
         
-        @media (max-width: 768px) {
+        @keyframes slideInMobile {
+            from { transform: translateY(-100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        @keyframes slideOutMobile {
+            from { transform: translateY(0); opacity: 1; }
+            to { transform: translateY(-100%); opacity: 0; }
+        }
+        
+        /* Desktop styles - остаются для больших экранов */
+        @media (min-width: 1024px) {
+            /* Переопределяем мобильные стили для десктопа */
             header {
-                padding: 1rem;
+                padding: 1.5rem 3rem;
             }
             
-            .header-container {
-                flex-direction: column;
-                gap: 1.5rem;
+            .mobile-menu-toggle {
+                display: none;
             }
             
-            nav ul {
-                gap: 1.5rem;
-                flex-wrap: wrap;
-                justify-content: center;
+            nav {
+                display: block;
             }
             
-            .auth-buttons {
-                width: 100%;
-                justify-content: center;
-            }
-            
-            .hero {
-                padding: 4rem 1rem;
+            .mobile-nav {
+                display: none;
             }
             
             .hero h1 {
-                font-size: 2.2rem;
-            }
-            
-            .hero p {
-                font-size: 1.1rem;
-            }
-            
-            .search-section {
-                margin: -2rem auto 2rem;
-                padding: 0 1rem;
-            }
-            
-            .search-card {
-                padding: 1.5rem;
-            }
-            
-            .search-filters {
-                grid-template-columns: 1fr;
-            }
-            
-            .map-section,
-            .complexes-section {
-                padding: 0 1rem;
-                margin: 3rem auto;
-            }
-            
-            .section-title {
-                flex-direction: column;
-                gap: 1rem;
-                align-items: flex-start;
+                font-size: 3.5rem;
             }
             
             .complexes-grid {
-                grid-template-columns: 1fr;
+                grid-template-columns: repeat(3, 1fr);
             }
             
             .steps-container {
-                grid-template-columns: 1fr;
-                gap: 2rem;
+                grid-template-columns: repeat(3, 1fr);
             }
             
-            .become-partner {
-                margin: 3rem 1rem;
-                padding: 3rem 1rem;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            .hero h1 {
-                font-size: 1.8rem;
-            }
-            
-            .hero-buttons {
-                flex-direction: column;
+            .modal {
                 align-items: center;
             }
             
-            .hero-buttons .btn {
-                width: 100%;
-                max-width: 300px;
+            .modal-content {
+                border-radius: var(--radius-xl);
+                max-width: 500px;
+                max-height: 80vh;
+                animation: slideUpDesktop 0.4s ease;
             }
             
-            .view-buttons {
-                width: 100%;
+            @keyframes slideUpDesktop {
+                from { transform: translateY(30px); opacity: 0; }
+                to { transform: translateY(0); opacity: 1; }
+            }
+        }
+        
+        /* Tablet styles */
+        @media (min-width: 768px) and (max-width: 1023px) {
+            .hero h1 {
+                font-size: 3rem;
             }
             
-            .view-buttons button {
-                flex: 1;
-                text-align: center;
+            .complexes-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .steps-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .checkboxes {
+                grid-template-columns: repeat(4, 1fr);
+            }
+            
+            .search-section,
+            .map-section,
+            .complexes-section {
+                width: calc(100% - 4rem);
+            }
+        }
+        
+        /* Landscape mode */
+        @media (max-height: 600px) and (orientation: landscape) {
+            .hero {
+                min-height: auto;
+                padding: 5rem 1.5rem 2rem;
+            }
+            
+            .modal-content {
+                max-height: 80vh;
+            }
+        }
+        
+        /* Dark mode support */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --dark: #F8FAFC;
+                --light: #0F172A;
+                --card-bg: rgba(30, 41, 59, 0.95);
+                --gray-light: #334155;
+                --gray: #94A3B8;
+            }
+            
+            body {
+                background: var(--light);
+                color: var(--dark);
+            }
+            
+            .search-card,
+            .complex-card,
+            .step,
+            .modal-content {
+                background: var(--card-bg);
+                border-color: var(--gray-light);
+            }
+            
+            select, input {
+                background: #1E293B;
+                color: var(--dark);
+                border-color: var(--gray-light);
             }
         }
     </style>
@@ -966,15 +1125,22 @@
                 <i class="fas fa-parking"></i>
                 <span>ParkBox</span>
             </div>
-            <nav>
+            
+            <!-- Мобильное меню -->
+            <button class="mobile-menu-toggle" id="mobile-menu-toggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <!-- Десктопная навигация (скрыта на мобильных) -->
+            <nav class="desktop-nav">
                 <ul>
-                    <li><a href="#search">Найти парковку</a></li>
-                    <li><a href="#how-it-works">Как это работает</a></li>
-                    <li><a href="#complexes">ЖК с паркингом</a></li>
-                    <li><a href="#" id="become-owner-link">Сдать место</a></li>
-                    <li><a href="#contacts">Контакты</a></li>
+                    <li><a href="#search"><i class="fas fa-search"></i>Поиск</a></li>
+                    <li><a href="#how-it-works"><i class="fas fa-play-circle"></i>Как работает</a></li>
+                    <li><a href="#complexes"><i class="fas fa-building"></i>ЖК</a></li>
+                    <li><a href="#" id="become-owner-link"><i class="fas fa-parking"></i>Сдать место</a></li>
                 </ul>
             </nav>
+            
             <div class="auth-buttons">
                 <button class="btn btn-outline" id="login-btn">
                     <i class="fas fa-sign-in-alt"></i>Войти
@@ -984,19 +1150,32 @@
                 </button>
             </div>
         </div>
+        
+        <!-- Мобильное меню (скрытое) -->
+        <div class="mobile-nav" id="mobile-nav">
+            <ul>
+                <li><a href="#search"><i class="fas fa-search"></i>Найти парковку</a></li>
+                <li><a href="#how-it-works"><i class="fas fa-play-circle"></i>Как это работает</a></li>
+                <li><a href="#complexes"><i class="fas fa-building"></i>ЖК с паркингом</a></li>
+                <li><a href="#" id="mobile-become-owner"><i class="fas fa-parking"></i>Сдать место</a></li>
+                <li><a href="#" id="mobile-become-partner"><i class="fas fa-handshake"></i>Стать партнёром</a></li>
+                <li><a href="#contacts"><i class="fas fa-phone"></i>Контакты</a></li>
+                <li><a href="#"><i class="fas fa-question-circle"></i>Помощь</a></li>
+            </ul>
+        </div>
     </header>
 
     <!-- Hero Section -->
     <section class="hero">
         <div class="hero-container">
-            <h1>Паркингшеринг в жилых комплексах Москвы</h1>
-            <p>Арендуйте машиноместа в охраняемых паркингах новых ЖК. Бронируйте онлайн, открывайте шлагбаум по QR-коду, платите только за время использования.</p>
+            <h1>Парковка нового поколения в твоём смартфоне</h1>
+            <p>Забронируй машиноместо в охраняемом паркинге за 2 минуты. QR-въезд, безопасные платежи, полная страховка.</p>
             <div class="hero-buttons">
                 <button class="btn btn-primary" id="find-garage-btn">
                     <i class="fas fa-search"></i>Найти парковку
                 </button>
-                <button class="btn btn-success" id="become-partner-btn">
-                    <i class="fas fa-handshake"></i>Стать партнёром
+                <button class="btn btn-secondary" id="become-partner-btn">
+                    <i class="fas fa-ruble-sign"></i>Зарабатывать
                 </button>
             </div>
         </div>
@@ -1006,17 +1185,17 @@
     <section class="search-section" id="search">
         <div class="search-card">
             <div class="search-header">
-                <h2>Найдите парковку у цели</h2>
+                <h2>Куда едем?</h2>
                 <div class="checkbox-item">
                     <input type="checkbox" id="available-now" checked>
-                    <label for="available-now">Только свободные сейчас</label>
+                    <label for="available-now">Свободно сейчас</label>
                 </div>
             </div>
             
             <div class="search-filters">
                 <div class="filter-group">
-                    <label for="location"><i class="fas fa-map-marker-alt"></i>ЖК, район или адрес</label>
-                    <input type="text" id="location" placeholder="Например: Алтуфьевское 53 или ЦАО" value="Москва">
+                    <label for="location"><i class="fas fa-map-marker-alt"></i>Адрес или ЖК</label>
+                    <input type="text" id="location" placeholder="Например: Алтуфьевское 53" value="Москва">
                 </div>
                 
                 <div class="filter-group">
@@ -1025,13 +1204,13 @@
                 </div>
                 
                 <div class="filter-group">
-                    <label for="duration"><i class="fas fa-clock"></i>Длительность</label>
+                    <label for="duration"><i class="fas fa-clock"></i>На сколько</label>
                     <select id="duration">
                         <option value="1">1 час</option>
                         <option value="2" selected>2 часа</option>
                         <option value="4">4 часа</option>
-                        <option value="8">8 часов (рабочий день)</option>
-                        <option value="24">24 часа (сутки)</option>
+                        <option value="8">8 часов</option>
+                        <option value="24">Сутки</option>
                     </select>
                 </div>
             </div>
@@ -1041,7 +1220,7 @@
                 <div class="checkboxes">
                     <div class="checkbox-item">
                         <input type="checkbox" id="type-standard" checked>
-                        <label for="type-standard">Стандартное</label>
+                        <label for="type-standard">Стандарт</label>
                     </div>
                     <div class="checkbox-item">
                         <input type="checkbox" id="type-wide">
@@ -1049,7 +1228,7 @@
                     </div>
                     <div class="checkbox-item">
                         <input type="checkbox" id="type-ev">
-                        <label for="type-ev">С зарядкой для ЭВ</label>
+                        <label for="type-ev">Для электрокара</label>
                     </div>
                     <div class="checkbox-item">
                         <input type="checkbox" id="type-covered">
@@ -1059,7 +1238,7 @@
             </div>
             
             <button class="btn btn-primary search-button" id="search-btn">
-                <i class="fas fa-search"></i>Показать доступные парковки
+                <i class="fas fa-search"></i>Найти парковку
             </button>
         </div>
     </section>
@@ -1067,11 +1246,12 @@
     <!-- Map Section -->
     <section class="map-section">
         <div class="section-title">
-            <h2>Паркинги жилых комплексов на карте</h2>
+            <h2>Паркинги на карте</h2>
             <div class="view-buttons">
-                <button class="active"><i class="fas fa-map"></i> Карта</button>
-                <button><i class="fas fa-list"></i> Список ЖК</button>
-                <button><i class="fas fa-filter"></i> Фильтры</button>
+                <button class="active"><i class="fas fa-map"></i>Карта</button>
+                <button><i class="fas fa-list"></i>Список</button>
+                <button><i class="fas fa-filter"></i>Фильтры</button>
+                <button><i class="fas fa-star"></i>Избранное</button>
             </div>
         </div>
         <div class="map-container">
@@ -1082,16 +1262,7 @@
     <!-- Residential Complexes Section -->
     <section class="complexes-section" id="complexes">
         <div class="section-title">
-            <h2>Жилые комплексы с паркингшерингом</h2>
-            <div class="filter-group">
-                <label for="sort">Сортировка:</label>
-                <select id="sort" style="width: auto; padding: 0.75rem 2rem 0.75rem 1rem;">
-                    <option value="price">По цене (сначала дешёвые)</option>
-                    <option value="rating">По рейтингу</option>
-                    <option value="distance">По расстоянию</option>
-                    <option value="places">По количеству мест</option>
-                </select>
-            </div>
+            <h2>Популярные ЖК с паркингом</h2>
         </div>
         
         <div class="complexes-grid" id="complexes-list">
@@ -1103,8 +1274,8 @@
     <section class="how-it-works" id="how-it-works">
         <div class="how-it-works-container">
             <div class="how-it-works-header">
-                <h2>Как работает ParkBox</h2>
-                <p>Арендуйте парковку в три простых шага — быстро, безопасно и удобно</p>
+                <h2>Как это работает</h2>
+                <p>Быстро, безопасно, без заморочек</p>
             </div>
             
             <div class="steps-container">
@@ -1112,24 +1283,24 @@
                     <div class="step-icon">
                         <i class="fas fa-search-location"></i>
                     </div>
-                    <h3>1. Найдите парковку</h3>
-                    <p>Укажите ЖК или район, дату и время. Мы покажем свободные места в охраняемых паркингах.</p>
+                    <h3>Выбирай</h3>
+                    <p>Найди свободное место на карте или в списке. Посмотри фото и описание.</p>
                 </div>
                 
                 <div class="step">
                     <div class="step-icon">
-                        <i class="fas fa-lock-open"></i>
+                        <i class="fas fa-qrcode"></i>
                     </div>
-                    <h3>2. Забронируйте онлайн</h3>
-                    <p>Выберите конкретное место, укажите время и оплатите онлайн. Получите QR-код для доступа.</p>
+                    <h3>Бронируй</h3>
+                    <p>Выбери время, оплати онлайн. Получи QR-код для въезда.</p>
                 </div>
                 
                 <div class="step">
                     <div class="step-icon">
                         <i class="fas fa-car"></i>
                     </div>
-                    <h3>3. Используйте парковку</h3>
-                    <p>Приезжайте в указанное время, откройте шлагбаум QR-кодом. После использования выезжайте — оплата спишется автоматически.</p>
+                    <h3>Паркуйся</h3>
+                    <p>Подъезжай, сканируй QR-код на шлагбауме. Место ждёт тебя!</p>
                 </div>
             </div>
         </div>
@@ -1138,34 +1309,34 @@
     <!-- Become Partner Section -->
     <section class="become-partner">
         <div class="partner-container">
-            <h2>Сдавайте свои машиноместа с ParkBox</h2>
-            <p>Зарабатывайте на простаивающих парковочных местах в вашем ЖК. Мы обеспечим безопасные платежи, страховку и техническую поддержку.</p>
+            <h2>Сдавай своё машиноместо</h2>
+            <p>Зарабатывай от 10 000 ₽ в месяц, пока твоё место простаивает. Мы берём на себя всё: безопасность, платежи, поддержку.</p>
             
             <div class="partner-features">
                 <div class="partner-feature">
-                    <i class="fas fa-chart-line"></i>
+                    <i class="fas fa-money-bill-wave"></i>
                     <h3>Пассивный доход</h3>
-                    <p>До 15 000 ₽ в месяц с одного места</p>
+                    <p>Автоматические выплаты 2 раза в месяц</p>
                 </div>
                 <div class="partner-feature">
                     <i class="fas fa-shield-alt"></i>
-                    <h3>Полная безопасность</h3>
-                    <p>Страхование, проверенные арендаторы</p>
+                    <h3>Полная защита</h3>
+                    <p>Страховка и гарантии на всё</p>
                 </div>
                 <div class="partner-feature">
                     <i class="fas fa-mobile-alt"></i>
-                    <h3>Удобное управление</h3>
-                    <p>Приложение для контроля бронирований</p>
+                    <h3>Управляй в приложении</h3>
+                    <p>Статистика, бронирования, настройки</p>
                 </div>
                 <div class="partner-feature">
                     <i class="fas fa-headset"></i>
                     <h3>Поддержка 24/7</h3>
-                    <p>Решение любых вопросов</p>
+                    <p>Поможем с любым вопросом</p>
                 </div>
             </div>
             
-            <button class="btn btn-accent" id="start-earning-btn" style="font-size: 1.1rem; padding: 1rem 2.5rem;">
-                <i class="fas fa-ruble-sign"></i> Начать зарабатывать
+            <button class="btn btn-accent" id="start-earning-btn" style="padding: 1rem 2rem; font-size: 1.1rem;">
+                <i class="fas fa-play-circle"></i> Начать зарабатывать
             </button>
         </div>
     </section>
@@ -1178,7 +1349,7 @@
                     <i class="fas fa-parking"></i>
                     <span>ParkBox</span>
                 </div>
-                <p>Паркингшеринг в жилых комплексах Москвы. Удобно, безопасно, доступно. Интеграция с паркингами новых ЖК.</p>
+                <p>Умный паркинг для умных городов. Безопасно, удобно, выгодно.</p>
                 <div class="social-links">
                     <a href="#"><i class="fab fa-vk"></i></a>
                     <a href="#"><i class="fab fa-telegram"></i></a>
@@ -1188,230 +1359,130 @@
             </div>
             
             <div class="footer-column">
-                <h3>Для водителей</h3>
+                <h3>Парковка</h3>
                 <ul>
-                    <li><a href="#how-it-works"><i class="fas fa-play"></i> Как это работает</a></li>
-                    <li><a href="#"><i class="fas fa-question-circle"></i> Частые вопросы</a></li>
-                    <li><a href="#"><i class="fas fa-star"></i> Отзывы</a></li>
-                    <li><a href="#"><i class="fas fa-shield-alt"></i> Безопасность</a></li>
-                    <li><a href="#"><i class="fas fa-mobile-alt"></i> Мобильное приложение</a></li>
+                    <li><a href="#search"><i class="fas fa-search"></i>Найти парковку</a></li>
+                    <li><a href="#complexes"><i class="fas fa-building"></i>ЖК с паркингом</a></li>
+                    <li><a href="#how-it-works"><i class="fas fa-play-circle"></i>Как это работает</a></li>
+                    <li><a href="#"><i class="fas fa-question-circle"></i>Вопросы и ответы</a></li>
                 </ul>
             </div>
             
             <div class="footer-column">
-                <h3>Для владельцев</h3>
+                <h3>Заработок</h3>
                 <ul>
-                    <li><a href="#" id="footer-become-owner"><i class="fas fa-parking"></i> Сдать машиноместо</a></li>
-                    <li><a href="#" id="footer-become-partner"><i class="fas fa-handshake"></i> Стать партнёром</a></li>
-                    <li><a href="#"><i class="fas fa-file-contract"></i> Договор аренды</a></li>
-                    <li><a href="#"><i class="fas fa-percentage"></i> Тарифы и комиссии</a></li>
-                    <li><a href="#"><i class="fas fa-chart-line"></i> Статистика доходов</a></li>
+                    <li><a href="#" id="footer-become-owner"><i class="fas fa-parking"></i>Сдать место</a></li>
+                    <li><a href="#" id="footer-become-partner"><i class="fas fa-handshake"></i>Стать партнёром</a></li>
+                    <li><a href="#"><i class="fas fa-chart-line"></i>Статистика доходов</a></li>
+                    <li><a href="#"><i class="fas fa-file-contract"></i>Документы</a></li>
                 </ul>
             </div>
             
             <div class="footer-column">
-                <h3>Для застройщиков и УК</h3>
+                <h3>Контакты</h3>
                 <ul>
-                    <li><a href="#"><i class="fas fa-building"></i> Интеграция паркинга</a></li>
-                    <li><a href="#"><i class="fas fa-cogs"></i> Техническое подключение</a></li>
-                    <li><a href="tel:+78001234567"><i class="fas fa-phone"></i> 8 (800) 123-45-67</a></li>
-                    <li><a href="mailto:partner@parkbox.ru"><i class="fas fa-envelope"></i> partner@parkbox.ru</a></li>
-                    <li><a href="#"><i class="fas fa-file-pdf"></i> Презентация для партнёров</a></li>
+                    <li><a href="tel:+78001234567"><i class="fas fa-phone"></i>8 (800) 123-45-67</a></li>
+                    <li><a href="mailto:support@parkbox.ru"><i class="fas fa-envelope"></i>support@parkbox.ru</a></li>
+                    <li><a href="#"><i class="fas fa-download"></i>Скачать приложение</a></li>
+                    <li><a href="#"><i class="fas fa-comments"></i>Написать в чат</a></li>
                 </ul>
             </div>
         </div>
         
         <div class="copyright">
-            © 2025 ParkBox. Все права защищены. ОГРН 1234567890123
+            © 2025 ParkBox. Все права защищены.<br>
+            ОГРН 1234567890123
         </div>
     </footer>
 
-    <!-- Login Modal -->
+    <!-- Модальные окна -->
     <div class="modal" id="login-modal">
         <div class="modal-content">
             <button class="close-modal" id="close-login">&times;</button>
             <div class="modal-header">
-                <h2>Вход в аккаунт</h2>
-                <p style="color: var(--gray); margin-top: 0.5rem;">Войдите для бронирования парковок</p>
+                <h2>Вход</h2>
+                <p style="color: var(--gray); margin-top: 0.5rem;">Войди в свой аккаунт</p>
             </div>
             <form id="login-form">
                 <div class="form-group">
-                    <label for="login-email">Email или телефон</label>
-                    <input type="text" id="login-email" placeholder="your@email.com или +7 (999) 123-45-67" required>
+                    <label for="login-email">Телефон или email</label>
+                    <input type="text" id="login-email" placeholder="+7 (999) 123-45-67" required>
                 </div>
                 <div class="form-group">
                     <label for="login-password">Пароль</label>
-                    <input type="password" id="login-password" placeholder="Введите пароль" required>
+                    <input type="password" id="login-password" placeholder="Твой пароль" required>
                 </div>
-                <div style="text-align: right; margin-bottom: 1.5rem;">
-                    <a href="#" style="color: var(--primary); text-decoration: none; font-size: 0.9rem;">Забыли пароль?</a>
-                </div>
-                <button type="submit" class="btn btn-primary" style="width: 100%;">Войти в аккаунт</button>
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Войти</button>
             </form>
             <div style="text-align: center; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--gray-light);">
-                <p style="color: var(--gray);">Нет аккаунта? <a href="#" id="switch-to-register" style="color: var(--primary); font-weight: 600; text-decoration: none;">Зарегистрироваться</a></p>
+                <p style="color: var(--gray); font-size: 0.95rem;">Нет аккаунта? <a href="#" id="switch-to-register" style="color: var(--primary); font-weight: 600; text-decoration: none;">Зарегистрируйся</a></p>
             </div>
         </div>
     </div>
 
-    <!-- Register Modal -->
     <div class="modal" id="register-modal">
         <div class="modal-content">
             <button class="close-modal" id="close-register">&times;</button>
             <div class="modal-header">
                 <h2>Регистрация</h2>
-                <p style="color: var(--gray); margin-top: 0.5rem;">Создайте аккаунт за 2 минуты</p>
+                <p style="color: var(--gray); margin-top: 0.5rem;">Создай аккаунт за минуту</p>
             </div>
             <form id="register-form">
                 <div class="form-group">
-                    <label for="register-name">Имя и фамилия</label>
-                    <input type="text" id="register-name" placeholder="Иван Иванов" required>
+                    <label for="register-name">Имя</label>
+                    <input type="text" id="register-name" placeholder="Как тебя зовут?" required>
                 </div>
                 <div class="form-group">
                     <label for="register-phone">Телефон</label>
                     <input type="tel" id="register-phone" placeholder="+7 (999) 123-45-67" required>
                 </div>
                 <div class="form-group">
-                    <label for="register-email">Email</label>
-                    <input type="email" id="register-email" placeholder="your@email.com" required>
-                </div>
-                <div class="form-group">
                     <label for="register-password">Пароль</label>
-                    <input type="password" id="register-password" placeholder="Не менее 8 символов" required>
+                    <input type="password" id="register-password" placeholder="Придумай пароль" required>
                 </div>
                 <div class="checkbox-item" style="margin-bottom: 1.5rem;">
                     <input type="checkbox" id="agree-terms" required>
-                    <label for="agree-terms" style="font-weight: normal;">Я соглашаюсь с <a href="#" style="color: var(--primary);">Условиями использования</a> и <a href="#" style="color: var(--primary);">Политикой конфиденциальности</a></label>
+                    <label for="agree-terms" style="font-weight: normal; font-size: 0.9rem;">Согласен с <a href="#" style="color: var(--primary);">условиями</a></label>
                 </div>
                 <button type="submit" class="btn btn-primary" style="width: 100%;">Создать аккаунт</button>
             </form>
-            <div style="text-align: center; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--gray-light);">
-                <p style="color: var(--gray);">Уже есть аккаунт? <a href="#" id="switch-to-login" style="color: var(--primary); font-weight: 600; text-decoration: none;">Войти</a></p>
-            </div>
         </div>
     </div>
 
-    <!-- Complex Details Modal -->
     <div class="modal" id="complex-details-modal">
         <div class="modal-content">
             <button class="close-modal" id="close-complex-details">&times;</button>
-            <div class="modal-header">
-                <h2 id="complex-modal-title">ЖК Алтуфьевское 53</h2>
-                <p style="color: var(--gray); margin-top: 0.5rem;" id="complex-modal-location">САО, 5 мин от метро</p>
-            </div>
-            
-            <div id="complex-modal-content">
-                <!-- Dynamic content will be inserted here -->
-            </div>
+            <div id="complex-modal-content"></div>
         </div>
     </div>
 
-    <!-- Booking Modal -->
-    <div class="modal" id="booking-modal">
-        <div class="modal-content">
-            <button class="close-modal" id="close-booking">&times;</button>
-            <div class="modal-header">
-                <h2>Бронирование парковки</h2>
-            </div>
-            <div id="booking-content">
-                <!-- Dynamic content will be inserted here -->
-            </div>
-        </div>
-    </div>
-
-    <!-- Become Owner Modal -->
     <div class="modal" id="become-owner-modal">
         <div class="modal-content">
             <button class="close-modal" id="close-become-owner">&times;</button>
             <div class="modal-header">
-                <h2>Сдать машиноместо</h2>
-                <p style="color: var(--gray); margin-top: 0.5rem;">Зарабатывайте от 10 000 ₽ в месяц на простаивающем месте</p>
+                <h2>Начать зарабатывать</h2>
+                <p style="color: var(--gray); margin-top: 0.5rem;">Подключи место за 5 минут</p>
             </div>
             
             <div class="form-group">
-                <label>Ваш жилой комплекс</label>
-                <select id="owner-complex" style="width: 100%; padding: 0.75rem; border-radius: 8px; border: 2px solid var(--gray-light);">
-                    <option value="">Выберите ЖК из списка</option>
-                    <option value="altuf">ЖК Алтуфьевское 53</option>
-                    <option value="nebo">ЖК Небо</option>
-                    <option value="samolyot">ЖК Самолёт</option>
-                    <option value="pik">ЖК от ПИК</option>
-                    <option value="other">Другой ЖК</option>
-                </select>
+                <label>Твой номер телефона</label>
+                <input type="tel" id="owner-phone" placeholder="+7 (999) 123-45-67" style="width: 100%; padding: 1rem; border-radius: var(--radius-md); border: 2px solid var(--gray-light); font-size: 1rem;">
             </div>
             
-            <div class="form-group">
-                <label>Номер парковочного места</label>
-                <input type="text" id="owner-spot-number" placeholder="Например: A-125 или 1-Б-45" style="width: 100%;">
-            </div>
-            
-            <div class="form-group">
-                <label>Тип места</label>
-                <div class="checkboxes">
-                    <div class="checkbox-item">
-                        <input type="checkbox" id="owner-type-standard" checked>
-                        <label for="owner-type-standard">Стандартное</label>
-                    </div>
-                    <div class="checkbox-item">
-                        <input type="checkbox" id="owner-type-wide">
-                        <label for="owner-type-wide">Широкое</label>
-                    </div>
-                    <div class="checkbox-item">
-                        <input type="checkbox" id="owner-type-ev">
-                        <label for="owner-type-ev">С зарядкой для ЭВ</label>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="form-group">
-                <label>Когда обычно свободно место?</label>
-                <div class="checkboxes">
-                    <div class="checkbox-item">
-                        <input type="checkbox" id="owner-weekdays" checked>
-                        <label for="owner-weekdays">Будни (днём)</label>
-                    </div>
-                    <div class="checkbox-item">
-                        <input type="checkbox" id="owner-weekends">
-                        <label for="owner-weekends">Выходные</label>
-                    </div>
-                    <div class="checkbox-item">
-                        <input type="checkbox" id="owner-nights">
-                        <label for="owner-nights">Ночью</label>
-                    </div>
-                    <div class="checkbox-item">
-                        <input type="checkbox" id="owner-always">
-                        <label for="owner-always">Постоянно (уезжаю в командировку)</label>
-                    </div>
-                </div>
-            </div>
-            
-            <div style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(59, 130, 246, 0.1)); padding: 1.5rem; border-radius: 12px; margin: 2rem 0;">
-                <h4 style="margin-bottom: 0.5rem; color: var(--success);"><i class="fas fa-calculator"></i> Примерный доход</h4>
-                <p style="color: var(--gray); font-size: 0.9rem;">Средний доход с одного места в вашем ЖК:</p>
-                <div style="display: flex; justify-content: space-between; margin-top: 1rem;">
-                    <div>
-                        <p style="font-size: 0.9rem; color: var(--gray);">В месяц</p>
-                        <p style="font-size: 1.5rem; font-weight: bold; color: var(--success);">10 000 - 15 000 ₽</p>
-                    </div>
-                    <div>
-                        <p style="font-size: 0.9rem; color: var(--gray);">В год</p>
-                        <p style="font-size: 1.5rem; font-weight: bold; color: var(--success);">120 000 - 180 000 ₽</p>
-                    </div>
-                </div>
-            </div>
-            
-            <button class="btn btn-success" style="width: 100%; padding: 1rem; font-size: 1.1rem;" onclick="submitBecomeOwner()">
-                <i class="fas fa-play-circle"></i> Перейти к подключению
+            <button class="btn btn-success" style="width: 100%; padding: 1rem; font-size: 1.1rem; margin-top: 1rem;" onclick="submitBecomeOwner()">
+                <i class="fas fa-play"></i> Получить консультацию
             </button>
             
-            <p style="text-align: center; margin-top: 1rem; color: var(--gray); font-size: 0.9rem;">
-                <i class="fas fa-shield-alt"></i> Безопасные платежи, страховка, техподдержка 24/7
+            <p style="text-align: center; margin-top: 1rem; color: var(--gray); font-size: 0.9rem; line-height: 1.5;">
+                Менеджер позвонит в течение 15 минут.<br>
+                Расскажет про доход, страховку и подключение.
             </p>
         </div>
     </div>
 
+    <!-- JavaScript -->
     <script>
-        // Sample data for residential complexes
+        // Данные ЖК
         const complexes = [
             {
                 id: 1,
@@ -1419,17 +1490,15 @@
                 priceFrom: 180,
                 rating: 4.7,
                 reviews: 89,
-                location: "САО, 5 мин от метро Алтуфьево",
+                location: "5 мин от м. Алтуфьево",
                 image: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-                features: ["охрана 24/7", "лифт", "камеры", "подземный"],
+                features: ["охрана", "лифт", "камеры", "крытый"],
                 coordinates: [55.9278, 37.5862],
-                totalSpots: 145,
                 availableSpots: 42,
                 spots: [
-                    { id: 101, number: "A-125", type: "стандартное", price: 180, features: ["крытое", "камера"] },
-                    { id: 102, number: "B-042", type: "широкое", price: 220, features: ["крытое", "зарядка ЭВ"] },
-                    { id: 103, number: "C-078", type: "стандартное", price: 180, features: ["крытое"] },
-                    { id: 104, number: "A-113", type: "стандартное", price: 180, features: ["крытое", "рядом с лифтом"] }
+                    { id: 101, number: "A-125", type: "стандарт", price: 180 },
+                    { id: 102, number: "B-042", type: "широкое", price: 220 },
+                    { id: 103, number: "C-078", type: "стандарт", price: 180 }
                 ]
             },
             {
@@ -1438,16 +1507,14 @@
                 priceFrom: 250,
                 rating: 4.9,
                 reviews: 156,
-                location: "ЦАО, 7 мин от м. Деловой Центр",
+                location: "м. Деловой Центр",
                 image: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-                features: ["премиум", "консьерж", "автомойка", "подземный"],
+                features: ["премиум", "консьерж", "автомойка"],
                 coordinates: [55.7490, 37.5390],
-                totalSpots: 280,
                 availableSpots: 67,
                 spots: [
-                    { id: 201, number: "P1-045", type: "премиум", price: 320, features: ["крытое", "зарядка ЭВ", "видеонаблюдение"] },
-                    { id: 202, number: "P2-112", type: "стандартное", price: 250, features: ["крытое", "рядом с выходом"] },
-                    { id: 203, number: "P1-089", type: "широкое", price: 280, features: ["крытое", "камера"] }
+                    { id: 201, number: "P1-045", type: "премиум", price: 320 },
+                    { id: 202, number: "P2-112", type: "стандарт", price: 250 }
                 ]
             },
             {
@@ -1456,100 +1523,40 @@
                 priceFrom: 200,
                 rating: 4.8,
                 reviews: 203,
-                location: "СЗАО, 10 мин от м. Сходненская",
+                location: "м. Сходненская",
                 image: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-                features: ["новый", "охрана", "лифты", "подземный"],
+                features: ["новый", "охрана", "лифты"],
                 coordinates: [55.8500, 37.4400],
-                totalSpots: 420,
                 availableSpots: 128,
                 spots: [
-                    { id: 301, number: "S-225", type: "стандартное", price: 200, features: ["крытое"] },
-                    { id: 302, number: "S-226", type: "стандартное", price: 200, features: ["крытое"] },
-                    { id: 303, number: "W-101", type: "широкое", price: 240, features: ["крытое", "для микроавтобуса"] }
-                ]
-            },
-            {
-                id: 4,
-                title: "ЖК от ПИК",
-                priceFrom: 150,
-                rating: 4.5,
-                reviews: 312,
-                location: "ЮВАО, 3 мин от м. Волжская",
-                image: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-                features: ["эконом", "охрана", "камеры", "наземный"],
-                coordinates: [55.6900, 37.7600],
-                totalSpots: 85,
-                availableSpots: 23,
-                spots: [
-                    { id: 401, number: "1-А-12", type: "стандартное", price: 150, features: ["наземное"] },
-                    { id: 402, number: "1-Б-08", type: "стандартное", price: 150, features: ["наземное", "под навесом"] }
-                ]
-            },
-            {
-                id: 5,
-                title: "ЖК Легенда",
-                priceFrom: 280,
-                rating: 4.9,
-                reviews: 178,
-                location: "ЗАО, 5 мин от ТТК",
-                image: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-                features: ["премиум", "консьерж", "автомойка", "подземный"],
-                coordinates: [55.7360, 37.4660],
-                totalSpots: 195,
-                availableSpots: 54,
-                spots: [
-                    { id: 501, number: "L-101", type: "премиум", price: 350, features: ["крытое", "зарядка ЭВ", "персональная камера"] },
-                    { id: 502, number: "L-205", type: "широкое", price: 280, features: ["крытое", "видеонаблюдение"] }
-                ]
-            },
-            {
-                id: 6,
-                title: "ЖК Серебряный Фонтан",
-                priceFrom: 220,
-                rating: 4.7,
-                reviews: 95,
-                location: "ЮАО, 8 мин от м. Кантемировская",
-                image: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-                features: ["бизнес", "охрана", "камеры", "подземный"],
-                coordinates: [55.6140, 37.7150],
-                totalSpots: 120,
-                availableSpots: 31,
-                spots: [
-                    { id: 601, number: "SF-034", type: "стандартное", price: 220, features: ["крытое", "камера"] },
-                    { id: 602, number: "SF-035", type: "стандартное", price: 220, features: ["крытое"] }
+                    { id: 301, number: "S-225", type: "стандарт", price: 200 },
+                    { id: 302, number: "W-101", type: "широкое", price: 240 }
                 ]
             }
         ];
 
-        // Initialize map
         let map;
         let markers = [];
         
         function initMap() {
-            // Remove Leaflet attribution
-            delete L.Control.Attribution.prototype.options.prefix;
-            
             map = L.map('map', {
                 attributionControl: false,
                 zoomControl: false
             }).setView([55.7558, 37.6173], 11);
             
-            // Add custom tile layer without attribution
             L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
                 maxZoom: 19,
             }).addTo(map);
             
-            // Custom zoom control
             L.control.zoom({
                 position: 'topright'
             }).addTo(map);
             
-            // Add markers for each complex
             complexes.forEach(complex => {
                 const marker = L.marker(complex.coordinates, {
                     icon: L.divIcon({
                         className: 'custom-marker',
-                        html: `<div style="background: linear-gradient(135deg, var(--primary), var(--secondary)); width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; border: 3px solid white; box-shadow: 0 2px 5px rgba(0,0,0,0.2); font-size: 0.8rem;">${complex.priceFrom}₽</div>`,
+                        html: `<div style="background: var(--primary); width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; border: 3px solid white; box-shadow: 0 2px 10px rgba(0,0,0,0.2);">${complex.priceFrom}₽</div>`,
                         iconSize: [40, 40],
                         iconAnchor: [20, 40]
                     })
@@ -1559,10 +1566,9 @@
                     <div style="padding: 10px; min-width: 200px;">
                         <h4 style="margin: 0 0 5px 0; color: var(--primary);">${complex.title}</h4>
                         <p style="margin: 0 0 10px 0; font-size: 14px; color: var(--gray);">${complex.location}</p>
-                        <p style="margin: 0 0 5px 0; font-size: 14px; color: var(--dark);"><strong>Свободно:</strong> ${complex.availableSpots} мест</p>
                         <p style="margin: 0 0 10px 0; font-size: 18px; font-weight: bold; color: var(--dark);">от ${complex.priceFrom} ₽/час</p>
-                        <button onclick="showComplexDetails(${complex.id})" style="background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; width: 100%; font-weight: 600;">
-                            Посмотреть места
+                        <button onclick="showComplexDetails(${complex.id})" style="background: var(--primary); color: white; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; width: 100%; font-weight: 600;">
+                            Выбрать место
                         </button>
                     </div>
                 `);
@@ -1570,7 +1576,6 @@
             });
         }
 
-        // Render complex cards
         function renderComplexes() {
             const container = document.getElementById('complexes-list');
             container.innerHTML = '';
@@ -1578,15 +1583,14 @@
             complexes.forEach(complex => {
                 const card = document.createElement('div');
                 card.className = 'complex-card';
-                card.onclick = () => showComplexDetails(complex.id);
                 card.innerHTML = `
                     <div class="complex-image" style="background-image: url('${complex.image}')">
-                        <div class="complex-badge">${complex.availableSpots} мест свободно</div>
+                        <div class="complex-badge">${complex.availableSpots} мест</div>
                     </div>
                     <div class="complex-content">
                         <div class="complex-header">
                             <div class="complex-title">${complex.title}</div>
-                            <div class="complex-price">от ${complex.priceFrom} ₽<span>/час</span></div>
+                            <div class="complex-price">${complex.priceFrom}<span>₽/час</span></div>
                         </div>
                         <div class="complex-location">
                             <i class="fas fa-map-marker-alt"></i>
@@ -1598,24 +1602,15 @@
                                 if (index % 3 === 0) className += ' primary';
                                 else if (index % 3 === 1) className += ' success';
                                 else className += ' accent';
-                                
-                                let icon = 'fas fa-check';
-                                if (feature.includes('охрана')) icon = 'fas fa-shield-alt';
-                                else if (feature.includes('лифт')) icon = 'fas fa-elevator';
-                                else if (feature.includes('камер')) icon = 'fas fa-video';
-                                else if (feature.includes('премиум')) icon = 'fas fa-crown';
-                                else if (feature.includes('консьерж')) icon = 'fas fa-concierge-bell';
-                                else if (feature.includes('подземный')) icon = 'fas fa-warehouse';
-                                
-                                return `<span class="${className}"><i class="${icon}"></i>${feature}</span>`;
+                                return `<span class="${className}">${feature}</span>`;
                             }).join('')}
                         </div>
                         <div class="complex-actions">
                             <div class="rating">
-                                <i class="fas fa-star"></i> ${complex.rating} <span style="color: var(--gray); font-weight: normal;">(${complex.reviews} отзывов)</span>
+                                <i class="fas fa-star"></i>${complex.rating} <span>(${complex.reviews})</span>
                             </div>
-                            <button class="btn btn-primary btn-small" onclick="event.stopPropagation(); showComplexDetails(${complex.id})">
-                                <i class="fas fa-search"></i>Выбрать место
+                            <button class="btn btn-primary btn-small" onclick="showComplexDetails(${complex.id})">
+                                Выбрать место
                             </button>
                         </div>
                     </div>
@@ -1624,7 +1619,7 @@
             });
         }
 
-        // Modal functions
+        // Модальные окна
         function showLoginModal() {
             document.getElementById('login-modal').style.display = 'flex';
             document.body.style.overflow = 'hidden';
@@ -1635,166 +1630,70 @@
             document.body.style.overflow = 'hidden';
         }
 
-        function showComplexDetails(complexId) {
-            const complex = complexes.find(c => c.id === complexId);
-            const modal = document.getElementById('complex-details-modal');
-            const title = document.getElementById('complex-modal-title');
-            const location = document.getElementById('complex-modal-location');
-            const content = document.getElementById('complex-modal-content');
-            
-            title.textContent = complex.title;
-            location.textContent = complex.location;
-            
-            content.innerHTML = `
-                <div style="margin-bottom: 1.5rem;">
-                    <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
-                        <div>
-                            <h4 style="color: var(--gray); margin-bottom: 0.25rem;">Свободных мест</h4>
-                            <p style="font-size: 1.5rem; font-weight: bold; color: var(--success);">${complex.availableSpots} из ${complex.totalSpots}</p>
-                        </div>
-                        <div style="text-align: right;">
-                            <h4 style="color: var(--gray); margin-bottom: 0.25rem;">Средняя цена</h4>
-                            <p style="font-size: 1.5rem; font-weight: bold; color: var(--primary);">${complex.priceFrom} ₽/час</p>
-                        </div>
-                    </div>
-                    
-                    <div style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(16, 185, 129, 0.1)); padding: 1rem; border-radius: 12px; margin-bottom: 1.5rem;">
-                        <p style="margin: 0; font-size: 0.95rem; color: var(--dark);">
-                            <i class="fas fa-info-circle" style="color: var(--primary);"></i> 
-                            Доступ в паркинг по QR-коду. Охрана 24/7, видеонаблюдение.
-                        </p>
-                    </div>
-                </div>
-                
-                <h3 style="margin-bottom: 1rem; color: var(--dark);">Доступные места</h3>
-                
-                <div class="spots-container">
-                    ${complex.spots.map(spot => `
-                        <div class="spot-item" onclick="showBookingModal(${complex.id}, ${spot.id})">
-                            <div class="spot-info">
-                                <h4 style="margin: 0 0 0.25rem 0;">Место ${spot.number}</h4>
-                                <p style="margin: 0; color: var(--gray); font-size: 0.9rem;">
-                                    ${spot.type} • ${spot.features.join(' • ')}
-                                </p>
-                            </div>
-                            <div style="text-align: right;">
-                                <div style="font-size: 1.25rem; font-weight: bold; color: var(--primary); margin-bottom: 0.25rem;">
-                                    ${spot.price} ₽/час
-                                </div>
-                                <button class="btn btn-primary btn-small" style="padding: 0.5rem 1rem;">
-                                    Забронировать
-                                </button>
-                            </div>
-                        </div>
-                    `).join('')}
-                </div>
-                
-                <div style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--gray-light);">
-                    <p style="color: var(--gray); font-size: 0.9rem; text-align: center;">
-                        <i class="fas fa-shield-alt"></i> Все места застрахованы. Оплата онлайн через Тинькофф.
-                    </p>
-                </div>
-            `;
-            
-            modal.style.display = 'flex';
-            document.body.style.overflow = 'hidden';
-        }
-
-        function showBookingModal(complexId, spotId) {
-            const complex = complexes.find(c => c.id === complexId);
-            const spot = complex.spots.find(s => s.id === spotId);
-            const modal = document.getElementById('booking-modal');
-            const content = document.getElementById('booking-content');
-            
-            content.innerHTML = `
-                <h3 style="margin-bottom: 1rem;">${complex.title}</h3>
-                <p style="color: var(--gray); margin-bottom: 1.5rem;">
-                    <i class="fas fa-map-marker-alt"></i> ${complex.location} • Место ${spot.number}
-                </p>
-                
-                <div style="background: var(--gray-light); padding: 1rem; border-radius: 12px; margin-bottom: 1.5rem;">
-                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
-                        <span>Тип места:</span>
-                        <span style="font-weight: bold;">${spot.type}</span>
-                    </div>
-                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
-                        <span>Особенности:</span>
-                        <span>${spot.features.join(', ')}</span>
-                    </div>
-                    <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 1.2rem;">
-                        <span>Цена за час:</span>
-                        <span>${spot.price} ₽</span>
-                    </div>
-                </div>
-                
-                <div class="form-group">
-                    <label>Дата и время начала</label>
-                    <input type="datetime-local" id="booking-date" value="2025-01-20T10:00" style="width: 100%; padding: 0.75rem; border-radius: 8px; border: 2px solid var(--gray-light);">
-                </div>
-                
-                <div class="form-group">
-                    <label>Длительность аренды</label>
-                    <select id="booking-duration" style="width: 100%; padding: 0.75rem; border-radius: 8px; border: 2px solid var(--gray-light);">
-                        <option value="1">1 час</option>
-                        <option value="2" selected>2 часа</option>
-                        <option value="4">4 часа</option>
-                        <option value="8">8 часов</option>
-                        <option value="24">24 часа</option>
-                    </select>
-                </div>
-                
-                <div style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(16, 185, 129, 0.1)); padding: 1.5rem; border-radius: 12px; margin: 2rem 0;">
-                    <div style="display: flex; justify-content: space-between; font-size: 1.2rem; font-weight: bold;">
-                        <span>Итого к оплате:</span>
-                        <span id="booking-total">${spot.price * 2} ₽</span>
-                    </div>
-                    <p style="color: var(--gray); font-size: 0.9rem; margin-top: 0.5rem;">Включая комиссию сервиса и страховку</p>
-                </div>
-                
-                <button class="btn btn-primary" style="width: 100%; padding: 1rem; font-size: 1.1rem;" onclick="confirmBooking(${complexId}, ${spotId})">
-                    <i class="fas fa-lock"></i> Перейти к безопасной оплате
-                </button>
-                
-                <p style="text-align: center; margin-top: 1rem; color: var(--gray); font-size: 0.9rem;">
-                    <i class="fas fa-shield-alt"></i> Безопасная оплата через Тинькофф
-                </p>
-            `;
-            
-            modal.style.display = 'flex';
-            document.body.style.overflow = 'hidden';
-            
-            // Update total price when duration changes
-            document.getElementById('booking-duration').addEventListener('change', function() {
-                const duration = parseInt(this.value);
-                document.getElementById('booking-total').textContent = (spot.price * duration) + ' ₽';
-            });
-        }
-
         function showBecomeOwnerModal() {
             document.getElementById('become-owner-modal').style.display = 'flex';
             document.body.style.overflow = 'hidden';
         }
 
-        function confirmBooking(complexId, spotId) {
+        function showComplexDetails(complexId) {
+            const complex = complexes.find(c => c.id === complexId);
+            const modal = document.getElementById('complex-details-modal');
+            const content = document.getElementById('complex-modal-content');
+            
+            content.innerHTML = `
+                <div class="modal-header">
+                    <h2>${complex.title}</h2>
+                    <p style="color: var(--gray); margin-top: 0.5rem;">${complex.location}</p>
+                </div>
+                
+                <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem;">
+                    <div style="flex: 1; background: rgba(37, 99, 235, 0.1); padding: 1rem; border-radius: var(--radius-md);">
+                        <div style="font-size: 0.9rem; color: var(--gray); margin-bottom: 0.25rem;">Свободно</div>
+                        <div style="font-size: 1.5rem; font-weight: bold; color: var(--primary);">${complex.availableSpots} мест</div>
+                    </div>
+                    <div style="flex: 1; background: rgba(6, 214, 160, 0.1); padding: 1rem; border-radius: var(--radius-md);">
+                        <div style="font-size: 0.9rem; color: var(--gray); margin-bottom: 0.25rem;">Цена от</div>
+                        <div style="font-size: 1.5rem; font-weight: bold; color: var(--secondary);">${complex.priceFrom} ₽/ч</div>
+                    </div>
+                </div>
+                
+                <h3 style="margin-bottom: 1rem;">Выбери место</h3>
+                
+                <div class="spots-container">
+                    ${complex.spots.map(spot => `
+                        <div class="spot-item" onclick="bookSpot(${complex.id}, ${spot.id})">
+                            <div class="spot-info">
+                                <h4>Место ${spot.number}</h4>
+                                <p>${spot.type} • ${spot.price} ₽/час</p>
+                            </div>
+                            <button class="btn btn-primary" style="width: 100%;">
+                                Забронировать за ${spot.price * 2} ₽
+                            </button>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+            
+            modal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function bookSpot(complexId, spotId) {
             const complex = complexes.find(c => c.id === complexId);
             const spot = complex.spots.find(s => s.id === spotId);
-            const duration = document.getElementById('booking-duration').value;
-            const total = spot.price * duration;
             
-            alert(`✅ Бронирование подтверждено!\n\n${complex.title}, место ${spot.number}\nСумма: ${total} ₽\n\nQR-код для доступа будет отправлен в SMS за 15 минут до начала аренды.\n\nВъезд через шлагбаум по QR-коду.`);
-            closeModal('booking-modal');
+            alert(`✅ Отличный выбор!\n\n${complex.title}, место ${spot.number}\nСтоимость: ${spot.price * 2} ₽\n\nОплата — QR-код для въезда придёт в SMS.`);
+            closeModal('complex-details-modal');
         }
 
         function submitBecomeOwner() {
-            const complex = document.getElementById('owner-complex').value;
-            const spotNumber = document.getElementById('owner-spot-number').value;
-            
-            if (!complex || !spotNumber) {
-                alert('Пожалуйста, заполните все обязательные поля');
+            const phone = document.getElementById('owner-phone').value;
+            if (!phone) {
+                showNotification('Введи номер телефона');
                 return;
             }
             
-            alert(`✅ Заявка принята!\n\nНаш менеджер свяжется с вами в течение 2 часов для подключения.\n\nДоход с вашего места: 10 000 - 15 000 ₽/месяц\n\nСледующие шаги:\n1. Подписание договора\n2. Установка QR-системы доступа\n3. Настройка в личном кабинете`);
+            showNotification('✅ Заявка принята! Менеджер позвонит в течение 15 минут.');
             closeModal('become-owner-modal');
         }
 
@@ -1803,282 +1702,116 @@
             document.body.style.overflow = 'auto';
         }
 
-        // Event listeners
-        document.addEventListener('DOMContentLoaded', function() {
-            // Initialize map and render complexes
-            initMap();
-            renderComplexes();
-            
-            // Hero buttons
-            document.getElementById('find-garage-btn').addEventListener('click', function() {
-                document.getElementById('search').scrollIntoView({ behavior: 'smooth' });
-            });
-            
-            document.getElementById('become-partner-btn').addEventListener('click', function() {
-                showBecomeOwnerModal();
-            });
-            
-            // Modal buttons
-            document.getElementById('login-btn').addEventListener('click', showLoginModal);
-            document.getElementById('register-btn').addEventListener('click', showRegisterModal);
-            document.getElementById('start-earning-btn').addEventListener('click', showBecomeOwnerModal);
-            document.getElementById('become-owner-link').addEventListener('click', function(e) {
-                e.preventDefault();
-                showBecomeOwnerModal();
-            });
-            document.getElementById('footer-become-owner').addEventListener('click', function(e) {
-                e.preventDefault();
-                showBecomeOwnerModal();
-            });
-            document.getElementById('footer-become-partner').addEventListener('click', function(e) {
-                e.preventDefault();
-                showBecomeOwnerModal();
-            });
-            
-            // Close buttons
-            document.getElementById('close-login').addEventListener('click', () => closeModal('login-modal'));
-            document.getElementById('close-register').addEventListener('click', () => closeModal('register-modal'));
-            document.getElementById('close-booking').addEventListener('click', () => closeModal('booking-modal'));
-            document.getElementById('close-complex-details').addEventListener('click', () => closeModal('complex-details-modal'));
-            document.getElementById('close-become-owner').addEventListener('click', () => closeModal('become-owner-modal'));
-            
-            // Switch between login and register modals
-            document.getElementById('switch-to-register').addEventListener('click', function(e) {
-                e.preventDefault();
-                closeModal('login-modal');
-                showRegisterModal();
-            });
-            
-            document.getElementById('switch-to-login').addEventListener('click', function(e) {
-                e.preventDefault();
-                closeModal('register-modal');
-                showLoginModal();
-            });
-            
-            // Form submissions
-            document.getElementById('login-form').addEventListener('submit', function(e) {
-                e.preventDefault();
-                alert('✅ Вход выполнен успешно!');
-                closeModal('login-modal');
-            });
-            
-            document.getElementById('register-form').addEventListener('submit', function(e) {
-                e.preventDefault();
-                alert('✅ Регистрация прошла успешно! Проверьте вашу почту для подтверждения.');
-                closeModal('register-modal');
-            });
-            
-            // View buttons
-            document.querySelectorAll('.view-buttons button').forEach(button => {
-                button.addEventListener('click', function() {
-                    document.querySelectorAll('.view-buttons button').forEach(btn => btn.classList.remove('active'));
-                    this.classList.add('active');
-                    
-                    if (this.textContent.includes('Список')) {
-                        document.getElementById('complexes').scrollIntoView({ behavior: 'smooth' });
-                    }
-                });
-            });
-            
-            // Search button
-            document.getElementById('search-btn').addEventListener('click', function() {
-                const location = document.getElementById('location').value.toLowerCase();
-                let filteredComplexes = complexes;
-                
-                // Apply location filter
-                if (location) {
-                    filteredComplexes = filteredComplexes.filter(c => 
-                        c.title.toLowerCase().includes(location) || 
-                        c.location.toLowerCase().includes(location)
-                    );
-                }
-                
-                // Re-render with filtered results
-                const container = document.getElementById('complexes-list');
-                container.innerHTML = '';
-                
-                if (filteredComplexes.length === 0) {
-                    container.innerHTML = `
-                        <div style="grid-column: 1/-1; text-align: center; padding: 4rem; background: white; border-radius: 20px; box-shadow: var(--card-shadow);">
-                            <div style="width: 80px; height: 80px; background: var(--gray-light); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem;">
-                                <i class="fas fa-search" style="font-size: 2rem; color: var(--gray);"></i>
-                            </div>
-                            <h3 style="margin-bottom: 0.5rem; color: var(--dark);">ЖК не найдены</h3>
-                            <p style="color: var(--gray); max-width: 400px; margin: 0 auto;">Попробуйте изменить параметры поиска или выбрать другой район</p>
-                        </div>
-                    `;
-                } else {
-                    // Update button text
-                    this.innerHTML = `<i class="fas fa-search"></i>Найдено ${filteredComplexes.length} ЖК`;
-                    
-                    // Update markers on map
-                    markers.forEach(marker => map.removeLayer(marker));
-                    markers = [];
-                    
-                    filteredComplexes.forEach(complex => {
-                        const marker = L.marker(complex.coordinates, {
-                            icon: L.divIcon({
-                                className: 'custom-marker',
-                                html: `<div style="background: linear-gradient(135deg, var(--primary), var(--secondary)); width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; border: 3px solid white; box-shadow: 0 2px 5px rgba(0,0,0,0.2); font-size: 0.8rem;">${complex.priceFrom}₽</div>`,
-                                iconSize: [40, 40],
-                                iconAnchor: [20, 40]
-                            })
-                        })
-                        .addTo(map)
-                        .bindPopup(`<strong>${complex.title}</strong><br>от ${complex.priceFrom} ₽/час`);
-                        markers.push(marker);
-                    });
-                    
-                    // Adjust map view
-                    if (filteredComplexes.length > 0) {
-                        const coordinates = filteredComplexes.map(c => c.coordinates);
-                        const bounds = L.latLngBounds(coordinates);
-                        map.fitBounds(bounds, { padding: [50, 50] });
-                    }
-                }
-                
-                // Show notification
-                showNotification(`Найдено ${filteredComplexes.length} ЖК с паркингшерингом`);
-            });
-            
-            // Sort functionality
-            document.getElementById('sort').addEventListener('change', function() {
-                const sortBy = this.value;
-                let sortedComplexes = [...complexes];
-                
-                if (sortBy === 'price') {
-                    sortedComplexes.sort((a, b) => a.priceFrom - b.priceFrom);
-                } else if (sortBy === 'rating') {
-                    sortedComplexes.sort((a, b) => b.rating - a.rating);
-                } else if (sortBy === 'places') {
-                    sortedComplexes.sort((a, b) => b.availableSpots - a.availableSpots);
-                }
-                
-                // Re-render sorted complexes
-                const container = document.getElementById('complexes-list');
-                container.innerHTML = '';
-                
-                sortedComplexes.forEach(complex => {
-                    const card = document.createElement('div');
-                    card.className = 'complex-card';
-                    card.onclick = () => showComplexDetails(complex.id);
-                    card.innerHTML = `
-                        <div class="complex-image" style="background-image: url('${complex.image}')">
-                            <div class="complex-badge">${complex.availableSpots} мест свободно</div>
-                        </div>
-                        <div class="complex-content">
-                            <div class="complex-header">
-                                <div class="complex-title">${complex.title}</div>
-                                <div class="complex-price">от ${complex.priceFrom} ₽<span>/час</span></div>
-                            </div>
-                            <div class="complex-location">
-                                <i class="fas fa-map-marker-alt"></i>
-                                ${complex.location}
-                            </div>
-                            <div class="complex-features">
-                                ${complex.features.map((feature, index) => {
-                                    let className = 'feature-tag';
-                                    if (index % 3 === 0) className += ' primary';
-                                    else if (index % 3 === 1) className += ' success';
-                                    else className += ' accent';
-                                    return `<span class="${className}"><i class="fas fa-check"></i>${feature}</span>`;
-                                }).join('')}
-                            </div>
-                            <div class="complex-actions">
-                                <div class="rating">
-                                    <i class="fas fa-star"></i> ${complex.rating} <span style="color: var(--gray); font-weight: normal;">(${complex.reviews})</span>
-                                </div>
-                                <button class="btn btn-primary btn-small" onclick="event.stopPropagation(); showComplexDetails(${complex.id})">
-                                    <i class="fas fa-search"></i>Выбрать место
-                                </button>
-                            </div>
-                        </div>
-                    `;
-                    container.appendChild(card);
-                });
-                
-                showNotification(`Сортировка изменена: ${this.options[this.selectedIndex].text}`);
-            });
-            
-            // Close modals when clicking outside
-            window.addEventListener('click', function(e) {
-                if (e.target.classList.contains('modal')) {
-                    closeModal(e.target.id);
-                }
-            });
-            
-            // Smooth scroll for navigation links
-            document.querySelectorAll('nav a[href^="#"]').forEach(anchor => {
-                anchor.addEventListener('click', function(e) {
-                    if (this.getAttribute('href').startsWith('#') && this.getAttribute('href').length > 1) {
-                        e.preventDefault();
-                        const targetId = this.getAttribute('href').substring(1);
-                        const targetElement = document.getElementById(targetId);
-                        if (targetElement) {
-                            targetElement.scrollIntoView({ behavior: 'smooth' });
-                        }
-                    }
-                });
-            });
-        });
-
-        // Show notification function
         function showNotification(message) {
             const notification = document.createElement('div');
-            notification.style.cssText = `
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                background: white;
-                color: var(--dark);
-                padding: 1rem 1.5rem;
-                border-radius: 12px;
-                box-shadow: var(--hover-shadow);
-                border-left: 4px solid var(--success);
-                z-index: 3000;
-                animation: slideIn 0.3s ease;
-                display: flex;
-                align-items: center;
-                gap: 10px;
-                max-width: 350px;
-            `;
-            
+            notification.className = 'notification';
             notification.innerHTML = `
-                <i class="fas fa-check-circle" style="color: var(--success); font-size: 1.2rem;"></i>
+                <i class="fas fa-check-circle" style="color: var(--secondary); font-size: 1.2rem;"></i>
                 <span>${message}</span>
             `;
             
             document.body.appendChild(notification);
             
             setTimeout(() => {
-                notification.style.animation = 'slideOut 0.3s ease';
+                notification.style.animation = 'slideOutMobile 0.3s ease';
                 setTimeout(() => notification.remove(), 300);
             }, 3000);
         }
 
-        // Add CSS for notification animations
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes slideIn {
-                from { transform: translateX(100%); opacity: 0; }
-                to { transform: translateX(0); opacity: 1; }
-            }
-            @keyframes slideOut {
-                from { transform: translateX(0); opacity: 1; }
-                to { transform: translateX(100%); opacity: 0; }
-            }
-        `;
-        document.head.appendChild(style);
-
-        // Make functions globally available
-        window.showComplexDetails = showComplexDetails;
-        window.showBookingModal = showBookingModal;
-        window.confirmBooking = confirmBooking;
-        window.closeModal = closeModal;
-        window.showLoginModal = showLoginModal;
-        window.showRegisterModal = showRegisterModal;
-        window.showBecomeOwnerModal = showBecomeOwnerModal;
-        window.submitBecomeOwner = submitBecomeOwner;
+        // Инициализация
+        document.addEventListener('DOMContentLoaded', function() {
+            initMap();
+            renderComplexes();
+            
+            // Мобильное меню
+            const menuToggle = document.getElementById('mobile-menu-toggle');
+            const mobileNav = document.getElementById('mobile-nav');
+            
+            menuToggle.addEventListener('click', () => {
+                mobileNav.classList.toggle('active');
+                menuToggle.innerHTML = mobileNav.classList.contains('active') 
+                    ? '<i class="fas fa-times"></i>' 
+                    : '<i class="fas fa-bars"></i>';
+            });
+            
+            // Закрытие меню при клике на ссылку
+            mobileNav.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => {
+                    mobileNav.classList.remove('active');
+                    menuToggle.innerHTML = '<i class="fas fa-bars"></i>';
+                });
+            });
+            
+            // Кнопки
+            document.getElementById('find-garage-btn').addEventListener('click', () => {
+                document.getElementById('search').scrollIntoView({ behavior: 'smooth' });
+            });
+            
+            document.getElementById('become-partner-btn').addEventListener('click', showBecomeOwnerModal);
+            document.getElementById('start-earning-btn').addEventListener('click', showBecomeOwnerModal);
+            document.getElementById('login-btn').addEventListener('click', showLoginModal);
+            document.getElementById('register-btn').addEventListener('click', showRegisterModal);
+            document.getElementById('mobile-become-owner').addEventListener('click', showBecomeOwnerModal);
+            document.getElementById('mobile-become-partner').addEventListener('click', showBecomeOwnerModal);
+            document.getElementById('footer-become-owner').addEventListener('click', showBecomeOwnerModal);
+            document.getElementById('footer-become-partner').addEventListener('click', showBecomeOwnerModal);
+            document.getElementById('become-owner-link').addEventListener('click', showBecomeOwnerModal);
+            
+            // Поиск
+            document.getElementById('search-btn').addEventListener('click', () => {
+                const location = document.getElementById('location').value;
+                showNotification(`Ищем парковку в ${location || 'Москве'}...`);
+            });
+            
+            // Формы
+            document.getElementById('login-form').addEventListener('submit', (e) => {
+                e.preventDefault();
+                showNotification('Вход выполнен!');
+                closeModal('login-modal');
+            });
+            
+            document.getElementById('register-form').addEventListener('submit', (e) => {
+                e.preventDefault();
+                showNotification('Аккаунт создан!');
+                closeModal('register-modal');
+            });
+            
+            // Переключение между модалками
+            document.getElementById('switch-to-register').addEventListener('click', (e) => {
+                e.preventDefault();
+                closeModal('login-modal');
+                showRegisterModal();
+            });
+            
+            // Закрытие модалок
+            document.querySelectorAll('.close-modal').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const modal = this.closest('.modal');
+                    closeModal(modal.id);
+                });
+            });
+            
+            // Закрытие по клику вне модалки
+            document.querySelectorAll('.modal').forEach(modal => {
+                modal.addEventListener('click', function(e) {
+                    if (e.target === this) closeModal(this.id);
+                });
+            });
+            
+            // Плавный скролл
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    const href = this.getAttribute('href');
+                    if (href !== '#') {
+                        e.preventDefault();
+                        const target = document.querySelector(href);
+                        if (target) {
+                            target.scrollIntoView({ behavior: 'smooth' });
+                        }
+                    }
+                });
+            });
+        });
     </script>
 </body>
 </html>

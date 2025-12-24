@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ParkBox — Гараж на час</title>
+    <title>ParkBox — Паркингшеринг в ЖК Москвы</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -167,6 +167,17 @@
         }
         
         .btn-accent:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--hover-shadow);
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, var(--success), #0da271);
+            color: white;
+            box-shadow: var(--card-shadow);
+        }
+        
+        .btn-success:hover {
             transform: translateY(-2px);
             box-shadow: var(--hover-shadow);
         }
@@ -381,41 +392,42 @@
             display: none !important;
         }
         
-        /* Garages List */
-        .garages-section {
+        /* Residential Complexes Section */
+        .complexes-section {
             max-width: 1400px;
             margin: 5rem auto;
             padding: 0 2rem;
         }
         
-        .garages-grid {
+        .complexes-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
             gap: 2rem;
         }
         
-        .garage-card {
+        .complex-card {
             background: white;
             border-radius: 20px;
             overflow: hidden;
             box-shadow: var(--card-shadow);
             transition: all 0.3s ease;
             border: 1px solid var(--gray-light);
+            cursor: pointer;
         }
         
-        .garage-card:hover {
+        .complex-card:hover {
             transform: translateY(-8px);
             box-shadow: var(--hover-shadow);
         }
         
-        .garage-image {
+        .complex-image {
             height: 220px;
             background-size: cover;
             background-position: center;
             position: relative;
         }
         
-        .garage-badge {
+        .complex-badge {
             position: absolute;
             top: 1rem;
             left: 1rem;
@@ -427,36 +439,39 @@
             font-weight: 600;
         }
         
-        .garage-content {
+        .complex-content {
             padding: 1.75rem;
         }
         
-        .garage-header {
+        .complex-header {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
             margin-bottom: 1rem;
         }
         
-        .garage-title {
+        .complex-title {
             font-size: 1.4rem;
             font-weight: 700;
             color: var(--dark);
         }
         
-        .garage-price {
-            font-size: 1.8rem;
+        .complex-price {
+            font-size: 1.4rem;
             font-weight: 800;
             color: var(--primary);
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
         }
         
-        .garage-price span {
+        .complex-price span {
             font-size: 0.9rem;
             color: var(--gray);
             font-weight: 400;
         }
         
-        .garage-location {
+        .complex-location {
             display: flex;
             align-items: center;
             gap: 10px;
@@ -465,7 +480,7 @@
             font-size: 0.95rem;
         }
         
-        .garage-features {
+        .complex-features {
             display: flex;
             flex-wrap: wrap;
             gap: 0.75rem;
@@ -499,7 +514,7 @@
             color: var(--accent);
         }
         
-        .garage-actions {
+        .complex-actions {
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -517,6 +532,38 @@
             padding: 0.75rem 1.5rem;
             font-size: 0.9rem;
             border-radius: 10px;
+        }
+        
+        /* Parking spots modal */
+        .spots-container {
+            max-height: 400px;
+            overflow-y: auto;
+            margin: 1rem 0;
+        }
+        
+        .spot-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border: 1px solid var(--gray-light);
+            border-radius: 10px;
+            margin-bottom: 0.75rem;
+            transition: all 0.2s;
+        }
+        
+        .spot-item:hover {
+            border-color: var(--primary);
+            background: rgba(59, 130, 246, 0.05);
+        }
+        
+        .spot-info h4 {
+            margin-bottom: 0.25rem;
+        }
+        
+        .spot-info p {
+            color: var(--gray);
+            font-size: 0.9rem;
         }
         
         /* How It Works */
@@ -554,7 +601,6 @@
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 3rem;
-            margin-bottom: 4rem;
         }
         
         .step {
@@ -597,17 +643,54 @@
             line-height: 1.7;
         }
         
-        .step-button {
-            margin-top: 1rem;
-            width: 100%;
+        /* Become Partner Section */
+        .become-partner {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+            color: white;
+            padding: 5rem 2rem;
+            margin-top: 5rem;
+            border-radius: 30px;
+            margin: 5rem 2rem;
         }
         
-        .action-buttons {
-            display: flex;
-            justify-content: center;
-            gap: 1.5rem;
-            flex-wrap: wrap;
-            margin-top: 3rem;
+        .partner-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        
+        .become-partner h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .become-partner p {
+            font-size: 1.2rem;
+            margin-bottom: 2.5rem;
+            opacity: 0.9;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .partner-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+        
+        .partner-feature {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2rem;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .partner-feature i {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--accent);
         }
         
         /* Footer */
@@ -715,10 +798,12 @@
             background: white;
             border-radius: 24px;
             width: 90%;
-            max-width: 500px;
+            max-width: 600px;
             padding: 2.5rem;
             position: relative;
             animation: slideUp 0.4s ease;
+            max-height: 90vh;
+            overflow-y: auto;
         }
         
         @keyframes slideUp {
@@ -769,7 +854,7 @@
                 font-size: 2.8rem;
             }
             
-            .garages-grid {
+            .complexes-grid {
                 grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
             }
         }
@@ -821,7 +906,7 @@
             }
             
             .map-section,
-            .garages-section {
+            .complexes-section {
                 padding: 0 1rem;
                 margin: 3rem auto;
             }
@@ -832,7 +917,7 @@
                 align-items: flex-start;
             }
             
-            .garages-grid {
+            .complexes-grid {
                 grid-template-columns: 1fr;
             }
             
@@ -841,14 +926,9 @@
                 gap: 2rem;
             }
             
-            .action-buttons {
-                flex-direction: column;
-                align-items: center;
-            }
-            
-            .action-buttons .btn {
-                width: 100%;
-                max-width: 300px;
+            .become-partner {
+                margin: 3rem 1rem;
+                padding: 3rem 1rem;
             }
         }
         
@@ -888,10 +968,10 @@
             </div>
             <nav>
                 <ul>
-                    <li><a href="#search">Найти гараж</a></li>
+                    <li><a href="#search">Найти парковку</a></li>
                     <li><a href="#how-it-works">Как это работает</a></li>
-                    <li><a href="#garages">Каталог</a></li>
-                    <li><a href="#" id="become-owner-link">Сдать гараж</a></li>
+                    <li><a href="#complexes">ЖК с паркингом</a></li>
+                    <li><a href="#" id="become-owner-link">Сдать место</a></li>
                     <li><a href="#contacts">Контакты</a></li>
                 </ul>
             </nav>
@@ -909,14 +989,14 @@
     <!-- Hero Section -->
     <section class="hero">
         <div class="hero-container">
-            <h1>Аренда гаража на час стала проще</h1>
-            <p>Найдите свободный гараж рядом с вами для парковки, ремонта или хранения. Бронируйте онлайн, оплачивайте безопасно, пользуйтесь удобно.</p>
+            <h1>Паркингшеринг в жилых комплексах Москвы</h1>
+            <p>Арендуйте машиноместа в охраняемых паркингах новых ЖК. Бронируйте онлайн, открывайте шлагбаум по QR-коду, платите только за время использования.</p>
             <div class="hero-buttons">
                 <button class="btn btn-primary" id="find-garage-btn">
-                    <i class="fas fa-search"></i>Найти гараж сейчас
+                    <i class="fas fa-search"></i>Найти парковку
                 </button>
-                <button class="btn btn-outline" id="learn-more-btn">
-                    <i class="fas fa-play-circle"></i>Посмотреть видео
+                <button class="btn btn-success" id="become-partner-btn">
+                    <i class="fas fa-handshake"></i>Стать партнёром
                 </button>
             </div>
         </div>
@@ -926,7 +1006,7 @@
     <section class="search-section" id="search">
         <div class="search-card">
             <div class="search-header">
-                <h2>Найдите идеальный гараж</h2>
+                <h2>Найдите парковку у цели</h2>
                 <div class="checkbox-item">
                     <input type="checkbox" id="available-now" checked>
                     <label for="available-now">Только свободные сейчас</label>
@@ -935,8 +1015,8 @@
             
             <div class="search-filters">
                 <div class="filter-group">
-                    <label for="location"><i class="fas fa-map-marker-alt"></i>Район или адрес</label>
-                    <input type="text" id="location" placeholder="Введите район, метро или адрес" value="Москва">
+                    <label for="location"><i class="fas fa-map-marker-alt"></i>ЖК, район или адрес</label>
+                    <input type="text" id="location" placeholder="Например: Алтуфьевское 53 или ЦАО" value="Москва">
                 </div>
                 
                 <div class="filter-group">
@@ -950,40 +1030,36 @@
                         <option value="1">1 час</option>
                         <option value="2" selected>2 часа</option>
                         <option value="4">4 часа</option>
-                        <option value="8">8 часов (день)</option>
+                        <option value="8">8 часов (рабочий день)</option>
                         <option value="24">24 часа (сутки)</option>
                     </select>
                 </div>
             </div>
             
             <div class="filter-group">
-                <label><i class="fas fa-tools"></i>Оснащение гаража</label>
+                <label><i class="fas fa-car"></i>Тип места</label>
                 <div class="checkboxes">
                     <div class="checkbox-item">
-                        <input type="checkbox" id="water" checked>
-                        <label for="water">Водоснабжение</label>
+                        <input type="checkbox" id="type-standard" checked>
+                        <label for="type-standard">Стандартное</label>
                     </div>
                     <div class="checkbox-item">
-                        <input type="checkbox" id="electricity" checked>
-                        <label for="electricity">Электричество 220В</label>
+                        <input type="checkbox" id="type-wide">
+                        <label for="type-wide">Широкое</label>
                     </div>
                     <div class="checkbox-item">
-                        <input type="checkbox" id="lighting">
-                        <label for="lighting">Хорошее освещение</label>
+                        <input type="checkbox" id="type-ev">
+                        <label for="type-ev">С зарядкой для ЭВ</label>
                     </div>
                     <div class="checkbox-item">
-                        <input type="checkbox" id="heating">
-                        <label for="heating">Отопление</label>
-                    </div>
-                    <div class="checkbox-item">
-                        <input type="checkbox" id="tools">
-                        <label for="tools">Инструменты</label>
+                        <input type="checkbox" id="type-covered">
+                        <label for="type-covered">Крытое</label>
                     </div>
                 </div>
             </div>
             
             <button class="btn btn-primary search-button" id="search-btn">
-                <i class="fas fa-search"></i>Показать 12 доступных боксов
+                <i class="fas fa-search"></i>Показать доступные парковки
             </button>
         </div>
     </section>
@@ -991,10 +1067,10 @@
     <!-- Map Section -->
     <section class="map-section">
         <div class="section-title">
-            <h2>Гаражи на карте Москвы</h2>
+            <h2>Паркинги жилых комплексов на карте</h2>
             <div class="view-buttons">
                 <button class="active"><i class="fas fa-map"></i> Карта</button>
-                <button><i class="fas fa-list"></i> Список</button>
+                <button><i class="fas fa-list"></i> Список ЖК</button>
                 <button><i class="fas fa-filter"></i> Фильтры</button>
             </div>
         </div>
@@ -1003,23 +1079,23 @@
         </div>
     </section>
 
-    <!-- Garages List -->
-    <section class="garages-section" id="garages">
+    <!-- Residential Complexes Section -->
+    <section class="complexes-section" id="complexes">
         <div class="section-title">
-            <h2>Популярные боксы рядом</h2>
+            <h2>Жилые комплексы с паркингшерингом</h2>
             <div class="filter-group">
                 <label for="sort">Сортировка:</label>
                 <select id="sort" style="width: auto; padding: 0.75rem 2rem 0.75rem 1rem;">
-                    <option value="price">По цене (сначала дешевые)</option>
+                    <option value="price">По цене (сначала дешёвые)</option>
                     <option value="rating">По рейтингу</option>
                     <option value="distance">По расстоянию</option>
-                    <option value="popularity">По популярности</option>
+                    <option value="places">По количеству мест</option>
                 </select>
             </div>
         </div>
         
-        <div class="garages-grid" id="garages-list">
-            <!-- Garage cards will be populated by JavaScript -->
+        <div class="complexes-grid" id="complexes-list">
+            <!-- Complex cards will be populated by JavaScript -->
         </div>
     </section>
 
@@ -1028,7 +1104,7 @@
         <div class="how-it-works-container">
             <div class="how-it-works-header">
                 <h2>Как работает ParkBox</h2>
-                <p>Арендуйте гараж в три простых шага — быстро, безопасно и удобно</p>
+                <p>Арендуйте парковку в три простых шага — быстро, безопасно и удобно</p>
             </div>
             
             <div class="steps-container">
@@ -1036,11 +1112,8 @@
                     <div class="step-icon">
                         <i class="fas fa-search-location"></i>
                     </div>
-                    <h3>1. Найдите бокс</h3>
-                    <p>Укажите местоположение, дату и нужные удобства. Используйте фильтры для точного поиска.</p>
-                    <button class="btn btn-outline step-button" onclick="document.getElementById('search').scrollIntoView({behavior: 'smooth'})">
-                        <i class="fas fa-search"></i> Начать поиск
-                    </button>
+                    <h3>1. Найдите парковку</h3>
+                    <p>Укажите ЖК или район, дату и время. Мы покажем свободные места в охраняемых паркингах.</p>
                 </div>
                 
                 <div class="step">
@@ -1048,35 +1121,52 @@
                         <i class="fas fa-lock-open"></i>
                     </div>
                     <h3>2. Забронируйте онлайн</h3>
-                    <p>Выберите подходящий вариант, укажите время и оплатите онлайн. Безопасная оплата картой.</p>
-                    <button class="btn btn-outline step-button" onclick="showRegisterModal()">
-                        <i class="fas fa-calendar-check"></i> Зарегистрироваться
-                    </button>
+                    <p>Выберите конкретное место, укажите время и оплатите онлайн. Получите QR-код для доступа.</p>
                 </div>
                 
                 <div class="step">
                     <div class="step-icon">
                         <i class="fas fa-car"></i>
                     </div>
-                    <h3>3. Используйте гараж</h3>
-                    <p>Приезжайте в указанное время, откройте гараж с помощью пин-кода из SMS. После использования закройте ворота.</p>
-                    <button class="btn btn-outline step-button" onclick="alert('Скачайте наше мобильное приложение для iOS и Android')">
-                        <i class="fas fa-mobile-alt"></i> Скачать приложение
-                    </button>
+                    <h3>3. Используйте парковку</h3>
+                    <p>Приезжайте в указанное время, откройте шлагбаум QR-кодом. После использования выезжайте — оплата спишется автоматически.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Become Partner Section -->
+    <section class="become-partner">
+        <div class="partner-container">
+            <h2>Сдавайте свои машиноместа с ParkBox</h2>
+            <p>Зарабатывайте на простаивающих парковочных местах в вашем ЖК. Мы обеспечим безопасные платежи, страховку и техническую поддержку.</p>
+            
+            <div class="partner-features">
+                <div class="partner-feature">
+                    <i class="fas fa-chart-line"></i>
+                    <h3>Пассивный доход</h3>
+                    <p>До 15 000 ₽ в месяц с одного места</p>
+                </div>
+                <div class="partner-feature">
+                    <i class="fas fa-shield-alt"></i>
+                    <h3>Полная безопасность</h3>
+                    <p>Страхование, проверенные арендаторы</p>
+                </div>
+                <div class="partner-feature">
+                    <i class="fas fa-mobile-alt"></i>
+                    <h3>Удобное управление</h3>
+                    <p>Приложение для контроля бронирований</p>
+                </div>
+                <div class="partner-feature">
+                    <i class="fas fa-headset"></i>
+                    <h3>Поддержка 24/7</h3>
+                    <p>Решение любых вопросов</p>
                 </div>
             </div>
             
-            <div class="action-buttons">
-                <button class="btn btn-primary" onclick="document.getElementById('search').scrollIntoView({behavior: 'smooth'})">
-                    <i class="fas fa-play-circle"></i> Посмотреть демо
-                </button>
-                <button class="btn btn-secondary" onclick="showRegisterModal()">
-                    <i class="fas fa-user-plus"></i> Начать бесплатно
-                </button>
-                <button class="btn btn-accent" onclick="alert('Свяжитесь с нами для получения специальных условий')">
-                    <i class="fas fa-crown"></i> Для бизнеса
-                </button>
-            </div>
+            <button class="btn btn-accent" id="start-earning-btn" style="font-size: 1.1rem; padding: 1rem 2.5rem;">
+                <i class="fas fa-ruble-sign"></i> Начать зарабатывать
+            </button>
         </div>
     </section>
 
@@ -1088,7 +1178,7 @@
                     <i class="fas fa-parking"></i>
                     <span>ParkBox</span>
                 </div>
-                <p>Сервис аренды гаражей на час. Удобно, безопасно, доступно. Работаем в Москве и Московской области.</p>
+                <p>Паркингшеринг в жилых комплексах Москвы. Удобно, безопасно, доступно. Интеграция с паркингами новых ЖК.</p>
                 <div class="social-links">
                     <a href="#"><i class="fab fa-vk"></i></a>
                     <a href="#"><i class="fab fa-telegram"></i></a>
@@ -1098,7 +1188,7 @@
             </div>
             
             <div class="footer-column">
-                <h3>Для клиентов</h3>
+                <h3>Для водителей</h3>
                 <ul>
                     <li><a href="#how-it-works"><i class="fas fa-play"></i> Как это работает</a></li>
                     <li><a href="#"><i class="fas fa-question-circle"></i> Частые вопросы</a></li>
@@ -1111,22 +1201,22 @@
             <div class="footer-column">
                 <h3>Для владельцев</h3>
                 <ul>
-                    <li><a href="#"><i class="fas fa-home"></i> Сдать гараж</a></li>
-                    <li><a href="#"><i class="fas fa-chart-line"></i> Стать партнёром</a></li>
+                    <li><a href="#" id="footer-become-owner"><i class="fas fa-parking"></i> Сдать машиноместо</a></li>
+                    <li><a href="#" id="footer-become-partner"><i class="fas fa-handshake"></i> Стать партнёром</a></li>
                     <li><a href="#"><i class="fas fa-file-contract"></i> Договор аренды</a></li>
-                    <li><a href="#"><i class="fas fa-lock"></i> Гарантии</a></li>
                     <li><a href="#"><i class="fas fa-percentage"></i> Тарифы и комиссии</a></li>
+                    <li><a href="#"><i class="fas fa-chart-line"></i> Статистика доходов</a></li>
                 </ul>
             </div>
             
             <div class="footer-column">
-                <h3>Контакты</h3>
+                <h3>Для застройщиков и УК</h3>
                 <ul>
+                    <li><a href="#"><i class="fas fa-building"></i> Интеграция паркинга</a></li>
+                    <li><a href="#"><i class="fas fa-cogs"></i> Техническое подключение</a></li>
                     <li><a href="tel:+78001234567"><i class="fas fa-phone"></i> 8 (800) 123-45-67</a></li>
-                    <li><a href="mailto:support@parkbox.ru"><i class="fas fa-envelope"></i> support@parkbox.ru</a></li>
-                    <li><a href="#"><i class="fas fa-map-marker-alt"></i> Москва, ул. Парковая, 15</a></li>
-                    <li><a href="#"><i class="fas fa-clock"></i> Поддержка 24/7</a></li>
-                    <li><a href="#"><i class="fas fa-file-pdf"></i> Правовые документы</a></li>
+                    <li><a href="mailto:partner@parkbox.ru"><i class="fas fa-envelope"></i> partner@parkbox.ru</a></li>
+                    <li><a href="#"><i class="fas fa-file-pdf"></i> Презентация для партнёров</a></li>
                 </ul>
             </div>
         </div>
@@ -1142,7 +1232,7 @@
             <button class="close-modal" id="close-login">&times;</button>
             <div class="modal-header">
                 <h2>Вход в аккаунт</h2>
-                <p style="color: var(--gray); margin-top: 0.5rem;">Войдите для бронирования гаражей</p>
+                <p style="color: var(--gray); margin-top: 0.5rem;">Войдите для бронирования парковок</p>
             </div>
             <form id="login-form">
                 <div class="form-group">
@@ -1201,12 +1291,27 @@
         </div>
     </div>
 
+    <!-- Complex Details Modal -->
+    <div class="modal" id="complex-details-modal">
+        <div class="modal-content">
+            <button class="close-modal" id="close-complex-details">&times;</button>
+            <div class="modal-header">
+                <h2 id="complex-modal-title">ЖК Алтуфьевское 53</h2>
+                <p style="color: var(--gray); margin-top: 0.5rem;" id="complex-modal-location">САО, 5 мин от метро</p>
+            </div>
+            
+            <div id="complex-modal-content">
+                <!-- Dynamic content will be inserted here -->
+            </div>
+        </div>
+    </div>
+
     <!-- Booking Modal -->
     <div class="modal" id="booking-modal">
         <div class="modal-content">
             <button class="close-modal" id="close-booking">&times;</button>
             <div class="modal-header">
-                <h2>Бронирование гаража</h2>
+                <h2>Бронирование парковки</h2>
             </div>
             <div id="booking-content">
                 <!-- Dynamic content will be inserted here -->
@@ -1214,80 +1319,205 @@
         </div>
     </div>
 
+    <!-- Become Owner Modal -->
+    <div class="modal" id="become-owner-modal">
+        <div class="modal-content">
+            <button class="close-modal" id="close-become-owner">&times;</button>
+            <div class="modal-header">
+                <h2>Сдать машиноместо</h2>
+                <p style="color: var(--gray); margin-top: 0.5rem;">Зарабатывайте от 10 000 ₽ в месяц на простаивающем месте</p>
+            </div>
+            
+            <div class="form-group">
+                <label>Ваш жилой комплекс</label>
+                <select id="owner-complex" style="width: 100%; padding: 0.75rem; border-radius: 8px; border: 2px solid var(--gray-light);">
+                    <option value="">Выберите ЖК из списка</option>
+                    <option value="altuf">ЖК Алтуфьевское 53</option>
+                    <option value="nebo">ЖК Небо</option>
+                    <option value="samolyot">ЖК Самолёт</option>
+                    <option value="pik">ЖК от ПИК</option>
+                    <option value="other">Другой ЖК</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label>Номер парковочного места</label>
+                <input type="text" id="owner-spot-number" placeholder="Например: A-125 или 1-Б-45" style="width: 100%;">
+            </div>
+            
+            <div class="form-group">
+                <label>Тип места</label>
+                <div class="checkboxes">
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="owner-type-standard" checked>
+                        <label for="owner-type-standard">Стандартное</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="owner-type-wide">
+                        <label for="owner-type-wide">Широкое</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="owner-type-ev">
+                        <label for="owner-type-ev">С зарядкой для ЭВ</label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>Когда обычно свободно место?</label>
+                <div class="checkboxes">
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="owner-weekdays" checked>
+                        <label for="owner-weekdays">Будни (днём)</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="owner-weekends">
+                        <label for="owner-weekends">Выходные</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="owner-nights">
+                        <label for="owner-nights">Ночью</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="owner-always">
+                        <label for="owner-always">Постоянно (уезжаю в командировку)</label>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(59, 130, 246, 0.1)); padding: 1.5rem; border-radius: 12px; margin: 2rem 0;">
+                <h4 style="margin-bottom: 0.5rem; color: var(--success);"><i class="fas fa-calculator"></i> Примерный доход</h4>
+                <p style="color: var(--gray); font-size: 0.9rem;">Средний доход с одного места в вашем ЖК:</p>
+                <div style="display: flex; justify-content: space-between; margin-top: 1rem;">
+                    <div>
+                        <p style="font-size: 0.9rem; color: var(--gray);">В месяц</p>
+                        <p style="font-size: 1.5rem; font-weight: bold; color: var(--success);">10 000 - 15 000 ₽</p>
+                    </div>
+                    <div>
+                        <p style="font-size: 0.9rem; color: var(--gray);">В год</p>
+                        <p style="font-size: 1.5rem; font-weight: bold; color: var(--success);">120 000 - 180 000 ₽</p>
+                    </div>
+                </div>
+            </div>
+            
+            <button class="btn btn-success" style="width: 100%; padding: 1rem; font-size: 1.1rem;" onclick="submitBecomeOwner()">
+                <i class="fas fa-play-circle"></i> Перейти к подключению
+            </button>
+            
+            <p style="text-align: center; margin-top: 1rem; color: var(--gray); font-size: 0.9rem;">
+                <i class="fas fa-shield-alt"></i> Безопасные платежи, страховка, техподдержка 24/7
+            </p>
+        </div>
+    </div>
+
     <script>
-        // Sample data for garages
-        const garages = [
+        // Sample data for residential complexes
+        const complexes = [
             {
                 id: 1,
-                title: "Тёплый гараж в ЦАО",
-                price: 350,
-                rating: 4.8,
-                reviews: 42,
-                location: "Центральный округ, 5 мин от метро",
-                image: "https://images.unsplash.com/photo-1621967299229-c6e7085b9b73?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-                features: ["вода", "электричество", "отопление", "освещение"],
-                coordinates: [55.7558, 37.6173],
-                available: true
+                title: "ЖК Алтуфьевское 53",
+                priceFrom: 180,
+                rating: 4.7,
+                reviews: 89,
+                location: "САО, 5 мин от метро Алтуфьево",
+                image: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+                features: ["охрана 24/7", "лифт", "камеры", "подземный"],
+                coordinates: [55.9278, 37.5862],
+                totalSpots: 145,
+                availableSpots: 42,
+                spots: [
+                    { id: 101, number: "A-125", type: "стандартное", price: 180, features: ["крытое", "камера"] },
+                    { id: 102, number: "B-042", type: "широкое", price: 220, features: ["крытое", "зарядка ЭВ"] },
+                    { id: 103, number: "C-078", type: "стандартное", price: 180, features: ["крытое"] },
+                    { id: 104, number: "A-113", type: "стандартное", price: 180, features: ["крытое", "рядом с лифтом"] }
+                ]
             },
             {
                 id: 2,
-                title: "Премиум бокс с инструментами",
-                price: 550,
+                title: "ЖК Небо",
+                priceFrom: 250,
                 rating: 4.9,
-                reviews: 67,
-                location: "ЮЗАО, 7 мин от метро",
-                image: "https://images.unsplash.com/photo-1549399542-7e3f8b79c341?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-                features: ["вода", "электричество", "инструменты", "мойка"],
-                coordinates: [55.6540, 37.5980],
-                available: true
+                reviews: 156,
+                location: "ЦАО, 7 мин от м. Деловой Центр",
+                image: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+                features: ["премиум", "консьерж", "автомойка", "подземный"],
+                coordinates: [55.7490, 37.5390],
+                totalSpots: 280,
+                availableSpots: 67,
+                spots: [
+                    { id: 201, number: "P1-045", type: "премиум", price: 320, features: ["крытое", "зарядка ЭВ", "видеонаблюдение"] },
+                    { id: 202, number: "P2-112", type: "стандартное", price: 250, features: ["крытое", "рядом с выходом"] },
+                    { id: 203, number: "P1-089", type: "широкое", price: 280, features: ["крытое", "камера"] }
+                ]
             },
             {
                 id: 3,
-                title: "Просторный гараж для микроавтобуса",
-                price: 650,
-                rating: 4.7,
-                reviews: 28,
-                location: "САО, 10 мин от метро",
-                image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-                features: ["электричество", "отопление", "видеонаблюдение"],
-                coordinates: [55.8030, 37.5250],
-                available: true
+                title: "ЖК Самолёт",
+                priceFrom: 200,
+                rating: 4.8,
+                reviews: 203,
+                location: "СЗАО, 10 мин от м. Сходненская",
+                image: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+                features: ["новый", "охрана", "лифты", "подземный"],
+                coordinates: [55.8500, 37.4400],
+                totalSpots: 420,
+                availableSpots: 128,
+                spots: [
+                    { id: 301, number: "S-225", type: "стандартное", price: 200, features: ["крытое"] },
+                    { id: 302, number: "S-226", type: "стандартное", price: 200, features: ["крытое"] },
+                    { id: 303, number: "W-101", type: "широкое", price: 240, features: ["крытое", "для микроавтобуса"] }
+                ]
             },
             {
                 id: 4,
-                title: "Эконом-вариант в спальном районе",
-                price: 250,
+                title: "ЖК от ПИК",
+                priceFrom: 150,
                 rating: 4.5,
-                reviews: 51,
-                location: "ВАО, 3 мин от метро",
-                image: "https://images.unsplash.com/photo-1600573472592-46d7c1c10dc2?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-                features: ["электричество", "освещение"],
-                coordinates: [55.7870, 37.7660],
-                available: true
+                reviews: 312,
+                location: "ЮВАО, 3 мин от м. Волжская",
+                image: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+                features: ["эконом", "охрана", "камеры", "наземный"],
+                coordinates: [55.6900, 37.7600],
+                totalSpots: 85,
+                availableSpots: 23,
+                spots: [
+                    { id: 401, number: "1-А-12", type: "стандартное", price: 150, features: ["наземное"] },
+                    { id: 402, number: "1-Б-08", type: "стандартное", price: 150, features: ["наземное", "под навесом"] }
+                ]
             },
             {
                 id: 5,
-                title: "Бокс с мойкой и подъёмником",
-                price: 850,
+                title: "ЖК Легенда",
+                priceFrom: 280,
                 rating: 4.9,
-                reviews: 89,
+                reviews: 178,
                 location: "ЗАО, 5 мин от ТТК",
-                image: "https://images.unsplash.com/photo-1551524165-6b6e5a6166f3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-                features: ["вода", "электричество", "отопление", "мойка", "инструменты", "подъёмник"],
+                image: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+                features: ["премиум", "консьерж", "автомойка", "подземный"],
                 coordinates: [55.7360, 37.4660],
-                available: true
+                totalSpots: 195,
+                availableSpots: 54,
+                spots: [
+                    { id: 501, number: "L-101", type: "премиум", price: 350, features: ["крытое", "зарядка ЭВ", "персональная камера"] },
+                    { id: 502, number: "L-205", type: "широкое", price: 280, features: ["крытое", "видеонаблюдение"] }
+                ]
             },
             {
                 id: 6,
-                title: "Современный гараж с охраной",
-                price: 450,
-                rating: 4.8,
-                reviews: 36,
-                location: "ЮАО, 8 мин от метро",
-                image: "https://images.unsplash.com/photo-1549399542-7e3f8b79c341?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-                features: ["вода", "электричество", "охрана", "wi-fi"],
+                title: "ЖК Серебряный Фонтан",
+                priceFrom: 220,
+                rating: 4.7,
+                reviews: 95,
+                location: "ЮАО, 8 мин от м. Кантемировская",
+                image: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+                features: ["бизнес", "охрана", "камеры", "подземный"],
                 coordinates: [55.6140, 37.7150],
-                available: true
+                totalSpots: 120,
+                availableSpots: 31,
+                spots: [
+                    { id: 601, number: "SF-034", type: "стандартное", price: 220, features: ["крытое", "камера"] },
+                    { id: 602, number: "SF-035", type: "стандартное", price: 220, features: ["крытое"] }
+                ]
             }
         ];
 
@@ -1314,24 +1544,25 @@
                 position: 'topright'
             }).addTo(map);
             
-            // Add markers for each garage
-            garages.forEach(garage => {
-                const marker = L.marker(garage.coordinates, {
+            // Add markers for each complex
+            complexes.forEach(complex => {
+                const marker = L.marker(complex.coordinates, {
                     icon: L.divIcon({
                         className: 'custom-marker',
-                        html: `<div style="background: linear-gradient(135deg, var(--primary), var(--secondary)); width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; border: 3px solid white; box-shadow: 0 2px 5px rgba(0,0,0,0.2);">${garage.price}</div>`,
-                        iconSize: [32, 32],
-                        iconAnchor: [16, 32]
+                        html: `<div style="background: linear-gradient(135deg, var(--primary), var(--secondary)); width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; border: 3px solid white; box-shadow: 0 2px 5px rgba(0,0,0,0.2); font-size: 0.8rem;">${complex.priceFrom}₽</div>`,
+                        iconSize: [40, 40],
+                        iconAnchor: [20, 40]
                     })
                 })
                 .addTo(map)
                 .bindPopup(`
-                    <div style="padding: 10px;">
-                        <h4 style="margin: 0 0 5px 0; color: var(--primary);">${garage.title}</h4>
-                        <p style="margin: 0 0 10px 0; font-size: 14px; color: var(--gray);">${garage.location}</p>
-                        <p style="margin: 0 0 10px 0; font-size: 18px; font-weight: bold; color: var(--dark);">${garage.price} ₽/час</p>
-                        <button onclick="showBookingModal(${garage.id})" style="background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; width: 100%; font-weight: 600;">
-                            Забронировать
+                    <div style="padding: 10px; min-width: 200px;">
+                        <h4 style="margin: 0 0 5px 0; color: var(--primary);">${complex.title}</h4>
+                        <p style="margin: 0 0 10px 0; font-size: 14px; color: var(--gray);">${complex.location}</p>
+                        <p style="margin: 0 0 5px 0; font-size: 14px; color: var(--dark);"><strong>Свободно:</strong> ${complex.availableSpots} мест</p>
+                        <p style="margin: 0 0 10px 0; font-size: 18px; font-weight: bold; color: var(--dark);">от ${complex.priceFrom} ₽/час</p>
+                        <button onclick="showComplexDetails(${complex.id})" style="background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; width: 100%; font-weight: 600;">
+                            Посмотреть места
                         </button>
                     </div>
                 `);
@@ -1339,51 +1570,52 @@
             });
         }
 
-        // Render garage cards
-        function renderGarages() {
-            const container = document.getElementById('garages-list');
+        // Render complex cards
+        function renderComplexes() {
+            const container = document.getElementById('complexes-list');
             container.innerHTML = '';
             
-            garages.forEach(garage => {
+            complexes.forEach(complex => {
                 const card = document.createElement('div');
-                card.className = 'garage-card';
+                card.className = 'complex-card';
+                card.onclick = () => showComplexDetails(complex.id);
                 card.innerHTML = `
-                    <div class="garage-image" style="background-image: url('${garage.image}')">
-                        ${garage.available ? '<div class="garage-badge">Свободно сейчас</div>' : ''}
+                    <div class="complex-image" style="background-image: url('${complex.image}')">
+                        <div class="complex-badge">${complex.availableSpots} мест свободно</div>
                     </div>
-                    <div class="garage-content">
-                        <div class="garage-header">
-                            <div class="garage-title">${garage.title}</div>
-                            <div class="garage-price">${garage.price} ₽<span>/час</span></div>
+                    <div class="complex-content">
+                        <div class="complex-header">
+                            <div class="complex-title">${complex.title}</div>
+                            <div class="complex-price">от ${complex.priceFrom} ₽<span>/час</span></div>
                         </div>
-                        <div class="garage-location">
+                        <div class="complex-location">
                             <i class="fas fa-map-marker-alt"></i>
-                            ${garage.location}
+                            ${complex.location}
                         </div>
-                        <div class="garage-features">
-                            ${garage.features.map((feature, index) => {
+                        <div class="complex-features">
+                            ${complex.features.map((feature, index) => {
                                 let className = 'feature-tag';
                                 if (index % 3 === 0) className += ' primary';
                                 else if (index % 3 === 1) className += ' success';
                                 else className += ' accent';
                                 
                                 let icon = 'fas fa-check';
-                                if (feature === 'вода') icon = 'fas fa-tint';
-                                else if (feature === 'электричество') icon = 'fas fa-bolt';
-                                else if (feature === 'инструменты') icon = 'fas fa-tools';
-                                else if (feature === 'мойка') icon = 'fas fa-car-wash';
-                                else if (feature === 'охрана') icon = 'fas fa-shield-alt';
-                                else if (feature === 'wi-fi') icon = 'fas fa-wifi';
+                                if (feature.includes('охрана')) icon = 'fas fa-shield-alt';
+                                else if (feature.includes('лифт')) icon = 'fas fa-elevator';
+                                else if (feature.includes('камер')) icon = 'fas fa-video';
+                                else if (feature.includes('премиум')) icon = 'fas fa-crown';
+                                else if (feature.includes('консьерж')) icon = 'fas fa-concierge-bell';
+                                else if (feature.includes('подземный')) icon = 'fas fa-warehouse';
                                 
                                 return `<span class="${className}"><i class="${icon}"></i>${feature}</span>`;
                             }).join('')}
                         </div>
-                        <div class="garage-actions">
+                        <div class="complex-actions">
                             <div class="rating">
-                                <i class="fas fa-star"></i> ${garage.rating} <span style="color: var(--gray); font-weight: normal;">(${garage.reviews} отзывов)</span>
+                                <i class="fas fa-star"></i> ${complex.rating} <span style="color: var(--gray); font-weight: normal;">(${complex.reviews} отзывов)</span>
                             </div>
-                            <button class="btn btn-primary btn-small" onclick="showBookingModal(${garage.id})">
-                                <i class="fas fa-calendar-check"></i>Забронировать
+                            <button class="btn btn-primary btn-small" onclick="event.stopPropagation(); showComplexDetails(${complex.id})">
+                                <i class="fas fa-search"></i>Выбрать место
                             </button>
                         </div>
                     </div>
@@ -1403,22 +1635,95 @@
             document.body.style.overflow = 'hidden';
         }
 
-        function showBookingModal(garageId) {
-            const garage = garages.find(g => g.id === garageId);
+        function showComplexDetails(complexId) {
+            const complex = complexes.find(c => c.id === complexId);
+            const modal = document.getElementById('complex-details-modal');
+            const title = document.getElementById('complex-modal-title');
+            const location = document.getElementById('complex-modal-location');
+            const content = document.getElementById('complex-modal-content');
+            
+            title.textContent = complex.title;
+            location.textContent = complex.location;
+            
+            content.innerHTML = `
+                <div style="margin-bottom: 1.5rem;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
+                        <div>
+                            <h4 style="color: var(--gray); margin-bottom: 0.25rem;">Свободных мест</h4>
+                            <p style="font-size: 1.5rem; font-weight: bold; color: var(--success);">${complex.availableSpots} из ${complex.totalSpots}</p>
+                        </div>
+                        <div style="text-align: right;">
+                            <h4 style="color: var(--gray); margin-bottom: 0.25rem;">Средняя цена</h4>
+                            <p style="font-size: 1.5rem; font-weight: bold; color: var(--primary);">${complex.priceFrom} ₽/час</p>
+                        </div>
+                    </div>
+                    
+                    <div style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(16, 185, 129, 0.1)); padding: 1rem; border-radius: 12px; margin-bottom: 1.5rem;">
+                        <p style="margin: 0; font-size: 0.95rem; color: var(--dark);">
+                            <i class="fas fa-info-circle" style="color: var(--primary);"></i> 
+                            Доступ в паркинг по QR-коду. Охрана 24/7, видеонаблюдение.
+                        </p>
+                    </div>
+                </div>
+                
+                <h3 style="margin-bottom: 1rem; color: var(--dark);">Доступные места</h3>
+                
+                <div class="spots-container">
+                    ${complex.spots.map(spot => `
+                        <div class="spot-item" onclick="showBookingModal(${complex.id}, ${spot.id})">
+                            <div class="spot-info">
+                                <h4 style="margin: 0 0 0.25rem 0;">Место ${spot.number}</h4>
+                                <p style="margin: 0; color: var(--gray); font-size: 0.9rem;">
+                                    ${spot.type} • ${spot.features.join(' • ')}
+                                </p>
+                            </div>
+                            <div style="text-align: right;">
+                                <div style="font-size: 1.25rem; font-weight: bold; color: var(--primary); margin-bottom: 0.25rem;">
+                                    ${spot.price} ₽/час
+                                </div>
+                                <button class="btn btn-primary btn-small" style="padding: 0.5rem 1rem;">
+                                    Забронировать
+                                </button>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+                
+                <div style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--gray-light);">
+                    <p style="color: var(--gray); font-size: 0.9rem; text-align: center;">
+                        <i class="fas fa-shield-alt"></i> Все места застрахованы. Оплата онлайн через Тинькофф.
+                    </p>
+                </div>
+            `;
+            
+            modal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function showBookingModal(complexId, spotId) {
+            const complex = complexes.find(c => c.id === complexId);
+            const spot = complex.spots.find(s => s.id === spotId);
             const modal = document.getElementById('booking-modal');
             const content = document.getElementById('booking-content');
             
             content.innerHTML = `
-                <h3 style="margin-bottom: 1rem;">${garage.title}</h3>
-                <p style="color: var(--gray); margin-bottom: 1.5rem;"><i class="fas fa-map-marker-alt"></i> ${garage.location}</p>
+                <h3 style="margin-bottom: 1rem;">${complex.title}</h3>
+                <p style="color: var(--gray); margin-bottom: 1.5rem;">
+                    <i class="fas fa-map-marker-alt"></i> ${complex.location} • Место ${spot.number}
+                </p>
+                
                 <div style="background: var(--gray-light); padding: 1rem; border-radius: 12px; margin-bottom: 1.5rem;">
                     <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
-                        <span>Цена за час:</span>
-                        <span style="font-weight: bold;">${garage.price} ₽</span>
+                        <span>Тип места:</span>
+                        <span style="font-weight: bold;">${spot.type}</span>
                     </div>
-                    <div style="display: flex; justify-content: space-between; font-size: 0.9rem; color: var(--gray);">
-                        <span>Рейтинг:</span>
-                        <span><i class="fas fa-star" style="color: var(--accent);"></i> ${garage.rating} (${garage.reviews} отзывов)</span>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                        <span>Особенности:</span>
+                        <span>${spot.features.join(', ')}</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 1.2rem;">
+                        <span>Цена за час:</span>
+                        <span>${spot.price} ₽</span>
                     </div>
                 </div>
                 
@@ -1441,12 +1746,12 @@
                 <div style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(16, 185, 129, 0.1)); padding: 1.5rem; border-radius: 12px; margin: 2rem 0;">
                     <div style="display: flex; justify-content: space-between; font-size: 1.2rem; font-weight: bold;">
                         <span>Итого к оплате:</span>
-                        <span id="booking-total">${garage.price * 2} ₽</span>
+                        <span id="booking-total">${spot.price * 2} ₽</span>
                     </div>
-                    <p style="color: var(--gray); font-size: 0.9rem; margin-top: 0.5rem;">Включая все комиссии и страховку</p>
+                    <p style="color: var(--gray); font-size: 0.9rem; margin-top: 0.5rem;">Включая комиссию сервиса и страховку</p>
                 </div>
                 
-                <button class="btn btn-primary" style="width: 100%; padding: 1rem; font-size: 1.1rem;" onclick="confirmBooking(${garageId})">
+                <button class="btn btn-primary" style="width: 100%; padding: 1rem; font-size: 1.1rem;" onclick="confirmBooking(${complexId}, ${spotId})">
                     <i class="fas fa-lock"></i> Перейти к безопасной оплате
                 </button>
                 
@@ -1461,17 +1766,36 @@
             // Update total price when duration changes
             document.getElementById('booking-duration').addEventListener('change', function() {
                 const duration = parseInt(this.value);
-                document.getElementById('booking-total').textContent = (garage.price * duration) + ' ₽';
+                document.getElementById('booking-total').textContent = (spot.price * duration) + ' ₽';
             });
         }
 
-        function confirmBooking(garageId) {
-            const garage = garages.find(g => g.id === garageId);
+        function showBecomeOwnerModal() {
+            document.getElementById('become-owner-modal').style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function confirmBooking(complexId, spotId) {
+            const complex = complexes.find(c => c.id === complexId);
+            const spot = complex.spots.find(s => s.id === spotId);
             const duration = document.getElementById('booking-duration').value;
-            const total = garage.price * duration;
+            const total = spot.price * duration;
             
-            alert(`✅ Бронирование подтверждено!\n\n${garage.title}\nСумма: ${total} ₽\n\nПосле оплаты вы получите SMS с кодом доступа.\n\nКод доступа будет активен за 15 минут до начала аренды.`);
+            alert(`✅ Бронирование подтверждено!\n\n${complex.title}, место ${spot.number}\nСумма: ${total} ₽\n\nQR-код для доступа будет отправлен в SMS за 15 минут до начала аренды.\n\nВъезд через шлагбаум по QR-коду.`);
             closeModal('booking-modal');
+        }
+
+        function submitBecomeOwner() {
+            const complex = document.getElementById('owner-complex').value;
+            const spotNumber = document.getElementById('owner-spot-number').value;
+            
+            if (!complex || !spotNumber) {
+                alert('Пожалуйста, заполните все обязательные поля');
+                return;
+            }
+            
+            alert(`✅ Заявка принята!\n\nНаш менеджер свяжется с вами в течение 2 часов для подключения.\n\nДоход с вашего места: 10 000 - 15 000 ₽/месяц\n\nСледующие шаги:\n1. Подписание договора\n2. Установка QR-системы доступа\n3. Настройка в личном кабинете`);
+            closeModal('become-owner-modal');
         }
 
         function closeModal(modalId) {
@@ -1481,23 +1805,42 @@
 
         // Event listeners
         document.addEventListener('DOMContentLoaded', function() {
-            // Initialize map and render garages
+            // Initialize map and render complexes
             initMap();
-            renderGarages();
+            renderComplexes();
             
-            // Hero button
+            // Hero buttons
             document.getElementById('find-garage-btn').addEventListener('click', function() {
                 document.getElementById('search').scrollIntoView({ behavior: 'smooth' });
+            });
+            
+            document.getElementById('become-partner-btn').addEventListener('click', function() {
+                showBecomeOwnerModal();
             });
             
             // Modal buttons
             document.getElementById('login-btn').addEventListener('click', showLoginModal);
             document.getElementById('register-btn').addEventListener('click', showRegisterModal);
+            document.getElementById('start-earning-btn').addEventListener('click', showBecomeOwnerModal);
+            document.getElementById('become-owner-link').addEventListener('click', function(e) {
+                e.preventDefault();
+                showBecomeOwnerModal();
+            });
+            document.getElementById('footer-become-owner').addEventListener('click', function(e) {
+                e.preventDefault();
+                showBecomeOwnerModal();
+            });
+            document.getElementById('footer-become-partner').addEventListener('click', function(e) {
+                e.preventDefault();
+                showBecomeOwnerModal();
+            });
             
             // Close buttons
             document.getElementById('close-login').addEventListener('click', () => closeModal('login-modal'));
             document.getElementById('close-register').addEventListener('click', () => closeModal('register-modal'));
             document.getElementById('close-booking').addEventListener('click', () => closeModal('booking-modal'));
+            document.getElementById('close-complex-details').addEventListener('click', () => closeModal('complex-details-modal'));
+            document.getElementById('close-become-owner').addEventListener('click', () => closeModal('become-owner-modal'));
             
             // Switch between login and register modals
             document.getElementById('switch-to-register').addEventListener('click', function(e) {
@@ -1532,127 +1875,128 @@
                     this.classList.add('active');
                     
                     if (this.textContent.includes('Список')) {
-                        document.getElementById('garages').scrollIntoView({ behavior: 'smooth' });
+                        document.getElementById('complexes').scrollIntoView({ behavior: 'smooth' });
                     }
                 });
             });
             
             // Search button
             document.getElementById('search-btn').addEventListener('click', function() {
-                const location = document.getElementById('location').value;
-                const duration = document.getElementById('duration').value;
-                const water = document.getElementById('water').checked;
-                const electricity = document.getElementById('electricity').checked;
+                const location = document.getElementById('location').value.toLowerCase();
+                let filteredComplexes = complexes;
                 
-                let filteredGarages = garages;
-                
-                // Apply filters (simplified for demo)
-                if (water) {
-                    filteredGarages = filteredGarages.filter(g => g.features.includes('вода'));
-                }
-                
-                if (electricity) {
-                    filteredGarages = filteredGarages.filter(g => g.features.includes('электричество'));
+                // Apply location filter
+                if (location) {
+                    filteredComplexes = filteredComplexes.filter(c => 
+                        c.title.toLowerCase().includes(location) || 
+                        c.location.toLowerCase().includes(location)
+                    );
                 }
                 
                 // Re-render with filtered results
-                const container = document.getElementById('garages-list');
+                const container = document.getElementById('complexes-list');
                 container.innerHTML = '';
                 
-                if (filteredGarages.length === 0) {
+                if (filteredComplexes.length === 0) {
                     container.innerHTML = `
                         <div style="grid-column: 1/-1; text-align: center; padding: 4rem; background: white; border-radius: 20px; box-shadow: var(--card-shadow);">
                             <div style="width: 80px; height: 80px; background: var(--gray-light); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem;">
                                 <i class="fas fa-search" style="font-size: 2rem; color: var(--gray);"></i>
                             </div>
-                            <h3 style="margin-bottom: 0.5rem; color: var(--dark);">Ничего не найдено</h3>
-                            <p style="color: var(--gray); max-width: 400px; margin: 0 auto;">Попробуйте изменить параметры поиска или выберите другую дату</p>
+                            <h3 style="margin-bottom: 0.5rem; color: var(--dark);">ЖК не найдены</h3>
+                            <p style="color: var(--gray); max-width: 400px; margin: 0 auto;">Попробуйте изменить параметры поиска или выбрать другой район</p>
                         </div>
                     `;
                 } else {
                     // Update button text
-                    this.innerHTML = `<i class="fas fa-search"></i>Найдено ${filteredGarages.length} боксов`;
+                    this.innerHTML = `<i class="fas fa-search"></i>Найдено ${filteredComplexes.length} ЖК`;
                     
                     // Update markers on map
                     markers.forEach(marker => map.removeLayer(marker));
                     markers = [];
                     
-                    filteredGarages.forEach(garage => {
-                        const marker = L.marker(garage.coordinates, {
+                    filteredComplexes.forEach(complex => {
+                        const marker = L.marker(complex.coordinates, {
                             icon: L.divIcon({
                                 className: 'custom-marker',
-                                html: `<div style="background: linear-gradient(135deg, var(--primary), var(--secondary)); width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; border: 3px solid white; box-shadow: 0 2px 5px rgba(0,0,0,0.2);">${garage.price}</div>`,
-                                iconSize: [32, 32],
-                                iconAnchor: [16, 32]
+                                html: `<div style="background: linear-gradient(135deg, var(--primary), var(--secondary)); width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; border: 3px solid white; box-shadow: 0 2px 5px rgba(0,0,0,0.2); font-size: 0.8rem;">${complex.priceFrom}₽</div>`,
+                                iconSize: [40, 40],
+                                iconAnchor: [20, 40]
                             })
                         })
                         .addTo(map)
-                        .bindPopup(`<strong>${garage.title}</strong><br>${garage.price} ₽/час`);
+                        .bindPopup(`<strong>${complex.title}</strong><br>от ${complex.priceFrom} ₽/час`);
                         markers.push(marker);
-                        
-                        // Add card
-                        const card = document.createElement('div');
-                        card.className = 'garage-card';
-                        card.innerHTML = `
-                            <div class="garage-image" style="background-image: url('${garage.image}')">
-                                <div class="garage-badge">Свободно сейчас</div>
-                            </div>
-                            <div class="garage-content">
-                                <div class="garage-header">
-                                    <div class="garage-title">${garage.title}</div>
-                                    <div class="garage-price">${garage.price} ₽<span>/час</span></div>
-                                </div>
-                                <div class="garage-location">
-                                    <i class="fas fa-map-marker-alt"></i>
-                                    ${garage.location}
-                                </div>
-                                <div class="garage-features">
-                                    ${garage.features.map((feature, index) => {
-                                        let className = 'feature-tag';
-                                        if (index % 3 === 0) className += ' primary';
-                                        else if (index % 3 === 1) className += ' success';
-                                        else className += ' accent';
-                                        return `<span class="${className}"><i class="fas fa-check"></i>${feature}</span>`;
-                                    }).join('')}
-                                </div>
-                                <div class="garage-actions">
-                                    <div class="rating">
-                                        <i class="fas fa-star"></i> ${garage.rating} <span style="color: var(--gray); font-weight: normal;">(${garage.reviews})</span>
-                                    </div>
-                                    <button class="btn btn-primary btn-small" onclick="showBookingModal(${garage.id})">
-                                        <i class="fas fa-calendar-check"></i>Забронировать
-                                    </button>
-                                </div>
-                            </div>
-                        `;
-                        container.appendChild(card);
                     });
                     
                     // Adjust map view
-                    if (filteredGarages.length > 0) {
-                        const coordinates = filteredGarages.map(g => g.coordinates);
+                    if (filteredComplexes.length > 0) {
+                        const coordinates = filteredComplexes.map(c => c.coordinates);
                         const bounds = L.latLngBounds(coordinates);
                         map.fitBounds(bounds, { padding: [50, 50] });
                     }
                 }
                 
                 // Show notification
-                showNotification(`Найдено ${filteredGarages.length} боксов по вашим критериям`);
+                showNotification(`Найдено ${filteredComplexes.length} ЖК с паркингшерингом`);
             });
             
             // Sort functionality
             document.getElementById('sort').addEventListener('change', function() {
                 const sortBy = this.value;
+                let sortedComplexes = [...complexes];
                 
                 if (sortBy === 'price') {
-                    garages.sort((a, b) => a.price - b.price);
+                    sortedComplexes.sort((a, b) => a.priceFrom - b.priceFrom);
                 } else if (sortBy === 'rating') {
-                    garages.sort((a, b) => b.rating - a.rating);
-                } else if (sortBy === 'popularity') {
-                    garages.sort((a, b) => b.reviews - a.reviews);
+                    sortedComplexes.sort((a, b) => b.rating - a.rating);
+                } else if (sortBy === 'places') {
+                    sortedComplexes.sort((a, b) => b.availableSpots - a.availableSpots);
                 }
                 
-                renderGarages();
+                // Re-render sorted complexes
+                const container = document.getElementById('complexes-list');
+                container.innerHTML = '';
+                
+                sortedComplexes.forEach(complex => {
+                    const card = document.createElement('div');
+                    card.className = 'complex-card';
+                    card.onclick = () => showComplexDetails(complex.id);
+                    card.innerHTML = `
+                        <div class="complex-image" style="background-image: url('${complex.image}')">
+                            <div class="complex-badge">${complex.availableSpots} мест свободно</div>
+                        </div>
+                        <div class="complex-content">
+                            <div class="complex-header">
+                                <div class="complex-title">${complex.title}</div>
+                                <div class="complex-price">от ${complex.priceFrom} ₽<span>/час</span></div>
+                            </div>
+                            <div class="complex-location">
+                                <i class="fas fa-map-marker-alt"></i>
+                                ${complex.location}
+                            </div>
+                            <div class="complex-features">
+                                ${complex.features.map((feature, index) => {
+                                    let className = 'feature-tag';
+                                    if (index % 3 === 0) className += ' primary';
+                                    else if (index % 3 === 1) className += ' success';
+                                    else className += ' accent';
+                                    return `<span class="${className}"><i class="fas fa-check"></i>${feature}</span>`;
+                                }).join('')}
+                            </div>
+                            <div class="complex-actions">
+                                <div class="rating">
+                                    <i class="fas fa-star"></i> ${complex.rating} <span style="color: var(--gray); font-weight: normal;">(${complex.reviews})</span>
+                                </div>
+                                <button class="btn btn-primary btn-small" onclick="event.stopPropagation(); showComplexDetails(${complex.id})">
+                                    <i class="fas fa-search"></i>Выбрать место
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+                
                 showNotification(`Сортировка изменена: ${this.options[this.selectedIndex].text}`);
             });
             
@@ -1675,20 +2019,6 @@
                         }
                     }
                 });
-            });
-            
-            // "Learn more" button
-            document.getElementById('learn-more-btn').addEventListener('click', function() {
-                alert('🎬 Демо-видео будет доступно в ближайшее время!\n\nСледите за обновлениями в наших социальных сетях.');
-            });
-            
-            // "Become owner" link
-            document.getElementById('become-owner-link').addEventListener('click', function(e) {
-                e.preventDefault();
-                showRegisterModal();
-                setTimeout(() => {
-                    alert('💰 Начните зарабатывать на своём гараже!\n\nПосле регистрации вы сможете добавить свой гараж и получать пассивный доход.');
-                }, 500);
             });
         });
 
@@ -1741,11 +2071,14 @@
         document.head.appendChild(style);
 
         // Make functions globally available
+        window.showComplexDetails = showComplexDetails;
         window.showBookingModal = showBookingModal;
         window.confirmBooking = confirmBooking;
         window.closeModal = closeModal;
         window.showLoginModal = showLoginModal;
         window.showRegisterModal = showRegisterModal;
+        window.showBecomeOwnerModal = showBecomeOwnerModal;
+        window.submitBecomeOwner = submitBecomeOwner;
     </script>
 </body>
 </html>

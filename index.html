@@ -3,37 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GarageNow — Гараж на час</title>
+    <title>ParkBox — Гараж на час</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <style>
+        :root {
+            --primary: #3b82f6;
+            --primary-dark: #2563eb;
+            --secondary: #10b981;
+            --accent: #f59e0b;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --gray: #64748b;
+            --gray-light: #e2e8f0;
+            --danger: #ef4444;
+            --success: #10b981;
+            --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --hover-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', system-ui, sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
         }
         
         body {
-            background-color: #f5f7fa;
-            color: #333;
+            background-color: var(--light);
+            color: var(--dark);
             line-height: 1.6;
         }
         
         /* Header */
         header {
-            background: linear-gradient(135deg, #1a3a8f 0%, #2d5cc2 100%);
-            color: white;
+            background: white;
             padding: 1rem 2rem;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            box-shadow: var(--card-shadow);
             position: sticky;
             top: 0;
             z-index: 1000;
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.98);
         }
         
         .header-container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
             display: flex;
             justify-content: space-between;
@@ -45,30 +61,50 @@
             align-items: center;
             gap: 12px;
             font-size: 1.8rem;
-            font-weight: 700;
+            font-weight: 800;
+            color: var(--primary);
         }
         
         .logo i {
-            color: #ffd700;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 2rem;
         }
         
         nav ul {
             display: flex;
             list-style: none;
-            gap: 2rem;
+            gap: 2.5rem;
         }
         
         nav a {
-            color: white;
+            color: var(--dark);
             text-decoration: none;
             font-weight: 500;
-            padding: 0.5rem 1rem;
-            border-radius: 6px;
-            transition: background 0.3s;
+            font-size: 0.95rem;
+            padding: 0.5rem 0;
+            position: relative;
+            transition: color 0.3s;
         }
         
         nav a:hover {
-            background: rgba(255, 255, 255, 0.15);
+            color: var(--primary);
+        }
+        
+        nav a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 0;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            transition: width 0.3s;
+        }
+        
+        nav a:hover::after {
+            width: 100%;
         }
         
         .auth-buttons {
@@ -77,92 +113,148 @@
         }
         
         .btn {
-            padding: 0.6rem 1.5rem;
-            border-radius: 8px;
+            padding: 0.75rem 1.75rem;
+            border-radius: 12px;
             font-weight: 600;
             cursor: pointer;
             border: none;
-            transition: all 0.3s;
+            transition: all 0.3s ease;
             display: inline-flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
+            font-size: 0.95rem;
         }
         
         .btn-outline {
             background: transparent;
-            border: 2px solid white;
-            color: white;
-        }
-        
-        .btn-primary {
-            background: #ff6b35;
-            color: white;
-        }
-        
-        .btn-primary:hover {
-            background: #e55a2b;
-            transform: translateY(-2px);
+            border: 2px solid var(--primary);
+            color: var(--primary);
         }
         
         .btn-outline:hover {
-            background: rgba(255, 255, 255, 0.1);
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: var(--card-shadow);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            box-shadow: var(--card-shadow);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--hover-shadow);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, var(--secondary), #0da271);
+            color: white;
+            box-shadow: var(--card-shadow);
+        }
+        
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--hover-shadow);
+        }
+        
+        .btn-accent {
+            background: linear-gradient(135deg, var(--accent), #e07b00);
+            color: white;
+            box-shadow: var(--card-shadow);
+        }
+        
+        .btn-accent:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--hover-shadow);
         }
         
         /* Hero Section */
         .hero {
-            padding: 4rem 2rem;
-            background: linear-gradient(rgba(26, 58, 143, 0.9), rgba(45, 92, 194, 0.8)), url('https://images.unsplash.com/photo-1558618666-fcd25c85cd64?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80');
-            background-size: cover;
-            background-position: center;
-            color: white;
-            text-align: center;
+            padding: 6rem 2rem;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.05) 0%, rgba(16, 185, 129, 0.05) 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(16, 185, 129, 0.1) 100%);
+            top: -300px;
+            right: -200px;
+            z-index: 0;
         }
         
         .hero-container {
-            max-width: 800px;
+            max-width: 1200px;
             margin: 0 auto;
+            position: relative;
+            z-index: 1;
+            text-align: center;
         }
         
         .hero h1 {
-            font-size: 3rem;
+            font-size: 3.5rem;
             margin-bottom: 1.5rem;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            background: linear-gradient(135deg, var(--dark), var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+            line-height: 1.2;
         }
         
         .hero p {
-            font-size: 1.3rem;
-            margin-bottom: 2rem;
-            opacity: 0.9;
+            font-size: 1.25rem;
+            color: var(--gray);
+            max-width: 700px;
+            margin: 0 auto 2.5rem;
+        }
+        
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
         }
         
         /* Search Section */
         .search-section {
             max-width: 1200px;
-            margin: -2rem auto 2rem;
+            margin: -4rem auto 4rem;
             padding: 0 2rem;
+            position: relative;
+            z-index: 2;
         }
         
         .search-card {
             background: white;
-            border-radius: 16px;
-            padding: 2rem;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: var(--hover-shadow);
+            border: 1px solid var(--gray-light);
         }
         
         .search-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 1.5rem;
+            margin-bottom: 2rem;
         }
         
         .search-header h2 {
-            color: #1a3a8f;
+            color: var(--dark);
+            font-size: 1.8rem;
         }
         
         .search-filters {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 1.5rem;
             margin-bottom: 2rem;
         }
@@ -175,18 +267,26 @@
         
         .filter-group label {
             font-weight: 600;
-            color: #555;
+            color: var(--dark);
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
+            font-size: 0.9rem;
         }
         
         select, input {
-            padding: 0.8rem 1rem;
-            border: 1px solid #ddd;
-            border-radius: 8px;
+            padding: 1rem 1.25rem;
+            border: 2px solid var(--gray-light);
+            border-radius: 12px;
             font-size: 1rem;
             background: white;
+            transition: border-color 0.3s;
+        }
+        
+        select:focus, input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
         }
         
         .checkboxes {
@@ -199,40 +299,29 @@
         .checkbox-item {
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
+            cursor: pointer;
+        }
+        
+        .checkbox-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            border-radius: 6px;
+            cursor: pointer;
         }
         
         .search-button {
             width: 100%;
-            padding: 1rem;
+            padding: 1.25rem;
             font-size: 1.1rem;
-            margin-top: 1rem;
+            border-radius: 12px;
+            margin-top: 1.5rem;
         }
         
         /* Map Section */
         .map-section {
-            max-width: 1200px;
-            margin: 3rem auto;
-            padding: 0 2rem;
-        }
-        
-        .map-container {
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-            height: 500px;
-            margin-top: 1.5rem;
-        }
-        
-        #map {
-            height: 100%;
-            width: 100%;
-        }
-        
-        /* Garages List */
-        .garages-section {
-            max-width: 1200px;
-            margin: 3rem auto;
+            max-width: 1400px;
+            margin: 5rem auto;
             padding: 0 2rem;
         }
         
@@ -244,37 +333,102 @@
         }
         
         .section-title h2 {
-            color: #1a3a8f;
-            font-size: 2rem;
+            color: var(--dark);
+            font-size: 2.2rem;
+            font-weight: 700;
+        }
+        
+        .view-buttons {
+            display: flex;
+            gap: 1rem;
+            background: var(--gray-light);
+            padding: 4px;
+            border-radius: 12px;
+        }
+        
+        .view-buttons button {
+            padding: 0.75rem 1.5rem;
+            border-radius: 10px;
+            border: none;
+            background: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .view-buttons button.active {
+            background: white;
+            color: var(--primary);
+            box-shadow: var(--card-shadow);
+        }
+        
+        .map-container {
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: var(--hover-shadow);
+            height: 550px;
+            margin-top: 1.5rem;
+            border: 1px solid var(--gray-light);
+        }
+        
+        #map {
+            height: 100%;
+            width: 100%;
+        }
+        
+        /* Remove Leaflet attribution */
+        .leaflet-control-attribution {
+            display: none !important;
+        }
+        
+        /* Garages List */
+        .garages-section {
+            max-width: 1400px;
+            margin: 5rem auto;
+            padding: 0 2rem;
         }
         
         .garages-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
             gap: 2rem;
         }
         
         .garage-card {
             background: white;
-            border-radius: 16px;
+            border-radius: 20px;
             overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: var(--card-shadow);
+            transition: all 0.3s ease;
+            border: 1px solid var(--gray-light);
         }
         
         .garage-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+            transform: translateY(-8px);
+            box-shadow: var(--hover-shadow);
         }
         
         .garage-image {
-            height: 200px;
+            height: 220px;
             background-size: cover;
             background-position: center;
+            position: relative;
+        }
+        
+        .garage-badge {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            background: var(--success);
+            color: white;
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
         }
         
         .garage-content {
-            padding: 1.5rem;
+            padding: 1.75rem;
         }
         
         .garage-header {
@@ -285,57 +439,64 @@
         }
         
         .garage-title {
-            font-size: 1.3rem;
+            font-size: 1.4rem;
             font-weight: 700;
-            color: #1a3a8f;
+            color: var(--dark);
         }
         
         .garage-price {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #ff6b35;
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--primary);
         }
         
         .garage-price span {
             font-size: 0.9rem;
-            color: #777;
+            color: var(--gray);
             font-weight: 400;
         }
         
         .garage-location {
             display: flex;
             align-items: center;
-            gap: 8px;
-            color: #666;
-            margin-bottom: 1rem;
+            gap: 10px;
+            color: var(--gray);
+            margin-bottom: 1.25rem;
+            font-size: 0.95rem;
         }
         
         .garage-features {
             display: flex;
             flex-wrap: wrap;
-            gap: 0.8rem;
+            gap: 0.75rem;
             margin-bottom: 1.5rem;
         }
         
         .feature-tag {
-            background: #f0f5ff;
-            color: #1a3a8f;
-            padding: 0.4rem 0.8rem;
-            border-radius: 20px;
+            background: var(--gray-light);
+            color: var(--dark);
+            padding: 0.5rem 1rem;
+            border-radius: 12px;
             font-size: 0.85rem;
             display: flex;
             align-items: center;
-            gap: 5px;
+            gap: 6px;
+            font-weight: 500;
         }
         
-        .feature-tag.water {
-            background: #e6f7ff;
-            color: #0066cc;
+        .feature-tag.primary {
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--primary);
         }
         
-        .feature-tag.electricity {
-            background: #fff7e6;
-            color: #cc6600;
+        .feature-tag.success {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+        
+        .feature-tag.accent {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--accent);
         }
         
         .garage-actions {
@@ -345,72 +506,136 @@
         }
         
         .rating {
-            color: #ffc107;
-            font-weight: 600;
+            color: var(--accent);
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 5px;
         }
         
         .btn-small {
-            padding: 0.6rem 1.2rem;
+            padding: 0.75rem 1.5rem;
             font-size: 0.9rem;
+            border-radius: 10px;
         }
         
         /* How It Works */
         .how-it-works {
-            background: #f0f5ff;
-            padding: 4rem 2rem;
-            margin-top: 4rem;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.05) 0%, rgba(16, 185, 129, 0.05) 100%);
+            padding: 6rem 2rem;
+            margin-top: 5rem;
+        }
+        
+        .how-it-works-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .how-it-works-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+        
+        .how-it-works-header h2 {
+            font-size: 2.8rem;
+            color: var(--dark);
+            margin-bottom: 1rem;
+            font-weight: 800;
+        }
+        
+        .how-it-works-header p {
+            color: var(--gray);
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto;
         }
         
         .steps-container {
-            max-width: 1200px;
-            margin: 0 auto;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2.5rem;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 3rem;
+            margin-bottom: 4rem;
         }
         
         .step {
+            background: white;
+            border-radius: 20px;
+            padding: 2.5rem;
             text-align: center;
-            padding: 2rem;
+            box-shadow: var(--card-shadow);
+            transition: transform 0.3s;
+            border: 1px solid var(--gray-light);
+        }
+        
+        .step:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--hover-shadow);
         }
         
         .step-icon {
-            background: #1a3a8f;
-            color: white;
             width: 80px;
             height: 80px;
-            border-radius: 50%;
+            border-radius: 20px;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0 auto 1.5rem;
+            margin: 0 auto 2rem;
             font-size: 2rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
         }
         
         .step h3 {
+            font-size: 1.5rem;
             margin-bottom: 1rem;
-            color: #1a3a8f;
+            color: var(--dark);
+        }
+        
+        .step p {
+            color: var(--gray);
+            margin-bottom: 1.5rem;
+            line-height: 1.7;
+        }
+        
+        .step-button {
+            margin-top: 1rem;
+            width: 100%;
+        }
+        
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            margin-top: 3rem;
         }
         
         /* Footer */
         footer {
-            background: #1a3a8f;
+            background: var(--dark);
             color: white;
-            padding: 3rem 2rem 1.5rem;
+            padding: 4rem 2rem 2rem;
         }
         
         .footer-container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-            margin-bottom: 2rem;
+            gap: 3rem;
+            margin-bottom: 3rem;
         }
         
         .footer-column h3 {
             margin-bottom: 1.5rem;
             font-size: 1.2rem;
+            font-weight: 700;
+        }
+        
+        .footer-column p {
+            color: #94a3b8;
+            margin-bottom: 1.5rem;
+            line-height: 1.7;
         }
         
         .footer-column ul {
@@ -422,20 +647,46 @@
         }
         
         .footer-column a {
-            color: #ccc;
+            color: #94a3b8;
             text-decoration: none;
             transition: color 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
         
         .footer-column a:hover {
             color: white;
         }
         
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        
+        .social-links a {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            transition: all 0.3s;
+        }
+        
+        .social-links a:hover {
+            background: var(--primary);
+            transform: translateY(-3px);
+        }
+        
         .copyright {
             text-align: center;
-            padding-top: 1.5rem;
+            padding-top: 2rem;
             border-top: 1px solid rgba(255, 255, 255, 0.1);
-            color: #aaa;
+            color: #94a3b8;
             font-size: 0.9rem;
         }
         
@@ -447,71 +698,182 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.7);
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
             z-index: 2000;
             align-items: center;
             justify-content: center;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
         
         .modal-content {
             background: white;
-            border-radius: 16px;
+            border-radius: 24px;
             width: 90%;
             max-width: 500px;
-            padding: 2rem;
+            padding: 2.5rem;
             position: relative;
+            animation: slideUp 0.4s ease;
+        }
+        
+        @keyframes slideUp {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
         }
         
         .close-modal {
             position: absolute;
-            top: 1rem;
-            right: 1rem;
+            top: 1.5rem;
+            right: 1.5rem;
             background: none;
             border: none;
             font-size: 1.5rem;
             cursor: pointer;
-            color: #777;
+            color: var(--gray);
+            transition: color 0.3s;
+        }
+        
+        .close-modal:hover {
+            color: var(--danger);
         }
         
         .modal-header {
-            margin-bottom: 1.5rem;
+            margin-bottom: 2rem;
         }
         
         .modal-header h2 {
-            color: #1a3a8f;
+            color: var(--dark);
+            font-size: 1.8rem;
+            font-weight: 700;
         }
         
         .form-group {
-            margin-bottom: 1.5rem;
+            margin-bottom: 1.75rem;
         }
         
         .form-group label {
             display: block;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.75rem;
             font-weight: 600;
+            color: var(--dark);
         }
         
         /* Responsive */
+        @media (max-width: 1024px) {
+            .hero h1 {
+                font-size: 2.8rem;
+            }
+            
+            .garages-grid {
+                grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            }
+        }
+        
         @media (max-width: 768px) {
+            header {
+                padding: 1rem;
+            }
+            
             .header-container {
                 flex-direction: column;
-                gap: 1rem;
+                gap: 1.5rem;
             }
             
             nav ul {
-                gap: 1rem;
+                gap: 1.5rem;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .auth-buttons {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .hero {
+                padding: 4rem 1rem;
             }
             
             .hero h1 {
                 font-size: 2.2rem;
             }
             
+            .hero p {
+                font-size: 1.1rem;
+            }
+            
+            .search-section {
+                margin: -2rem auto 2rem;
+                padding: 0 1rem;
+            }
+            
+            .search-card {
+                padding: 1.5rem;
+            }
+            
             .search-filters {
                 grid-template-columns: 1fr;
             }
             
+            .map-section,
+            .garages-section {
+                padding: 0 1rem;
+                margin: 3rem auto;
+            }
+            
+            .section-title {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+            
             .garages-grid {
                 grid-template-columns: 1fr;
+            }
+            
+            .steps-container {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .action-buttons .btn {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .hero h1 {
+                font-size: 1.8rem;
+            }
+            
+            .hero-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .hero-buttons .btn {
+                width: 100%;
+                max-width: 300px;
+            }
+            
+            .view-buttons {
+                width: 100%;
+            }
+            
+            .view-buttons button {
+                flex: 1;
+                text-align: center;
             }
         }
     </style>
@@ -521,8 +883,8 @@
     <header>
         <div class="header-container">
             <div class="logo">
-                <i class="fas fa-warehouse"></i>
-                <span>GarageNow</span>
+                <i class="fas fa-parking"></i>
+                <span>ParkBox</span>
             </div>
             <nav>
                 <ul>
@@ -530,6 +892,7 @@
                     <li><a href="#how-it-works">Как это работает</a></li>
                     <li><a href="#garages">Каталог</a></li>
                     <li><a href="#" id="become-owner-link">Сдать гараж</a></li>
+                    <li><a href="#contacts">Контакты</a></li>
                 </ul>
             </nav>
             <div class="auth-buttons">
@@ -546,11 +909,16 @@
     <!-- Hero Section -->
     <section class="hero">
         <div class="hero-container">
-            <h1>Гараж на час для любых задач</h1>
-            <p>Найдите свободный гараж рядом с вами для парковки, ремонта, мойки или хранения вещей. Арендуйте на час, день или неделю.</p>
-            <button class="btn btn-primary" style="font-size: 1.2rem; padding: 1rem 2.5rem;">
-                <i class="fas fa-search"></i>Найти гараж сейчас
-            </button>
+            <h1>Аренда гаража на час стала проще</h1>
+            <p>Найдите свободный гараж рядом с вами для парковки, ремонта или хранения. Бронируйте онлайн, оплачивайте безопасно, пользуйтесь удобно.</p>
+            <div class="hero-buttons">
+                <button class="btn btn-primary" id="find-garage-btn">
+                    <i class="fas fa-search"></i>Найти гараж сейчас
+                </button>
+                <button class="btn btn-outline" id="learn-more-btn">
+                    <i class="fas fa-play-circle"></i>Посмотреть видео
+                </button>
+            </div>
         </div>
     </section>
 
@@ -561,7 +929,7 @@
                 <h2>Найдите идеальный гараж</h2>
                 <div class="checkbox-item">
                     <input type="checkbox" id="available-now" checked>
-                    <label for="available-now">Свободно прямо сейчас</label>
+                    <label for="available-now">Только свободные сейчас</label>
                 </div>
             </div>
             
@@ -573,7 +941,7 @@
                 
                 <div class="filter-group">
                     <label for="date"><i class="fas fa-calendar-alt"></i>Дата и время</label>
-                    <input type="datetime-local" id="date" value="2024-05-20T10:00">
+                    <input type="datetime-local" id="date" value="2025-01-20T10:00">
                 </div>
                 
                 <div class="filter-group">
@@ -593,11 +961,11 @@
                 <div class="checkboxes">
                     <div class="checkbox-item">
                         <input type="checkbox" id="water" checked>
-                        <label for="water">Вода</label>
+                        <label for="water">Водоснабжение</label>
                     </div>
                     <div class="checkbox-item">
                         <input type="checkbox" id="electricity" checked>
-                        <label for="electricity">Электричество</label>
+                        <label for="electricity">Электричество 220В</label>
                     </div>
                     <div class="checkbox-item">
                         <input type="checkbox" id="lighting">
@@ -615,7 +983,7 @@
             </div>
             
             <button class="btn btn-primary search-button" id="search-btn">
-                <i class="fas fa-search"></i>Показать 12 свободных гаражей
+                <i class="fas fa-search"></i>Показать 12 доступных боксов
             </button>
         </div>
     </section>
@@ -623,14 +991,11 @@
     <!-- Map Section -->
     <section class="map-section">
         <div class="section-title">
-            <h2>Гаражи на карте</h2>
-            <div>
-                <button class="btn btn-outline" style="background: white; border-color: #ddd;">
-                    <i class="fas fa-list"></i>Список
-                </button>
-                <button class="btn btn-primary">
-                    <i class="fas fa-map"></i>Карта
-                </button>
+            <h2>Гаражи на карте Москвы</h2>
+            <div class="view-buttons">
+                <button class="active"><i class="fas fa-map"></i> Карта</button>
+                <button><i class="fas fa-list"></i> Список</button>
+                <button><i class="fas fa-filter"></i> Фильтры</button>
             </div>
         </div>
         <div class="map-container">
@@ -641,13 +1006,14 @@
     <!-- Garages List -->
     <section class="garages-section" id="garages">
         <div class="section-title">
-            <h2>Доступные гаражи рядом с вами</h2>
+            <h2>Популярные боксы рядом</h2>
             <div class="filter-group">
-                <label for="sort">Сортировать:</label>
-                <select id="sort" style="width: auto;">
+                <label for="sort">Сортировка:</label>
+                <select id="sort" style="width: auto; padding: 0.75rem 2rem 0.75rem 1rem;">
                     <option value="price">По цене (сначала дешевые)</option>
                     <option value="rating">По рейтингу</option>
                     <option value="distance">По расстоянию</option>
+                    <option value="popularity">По популярности</option>
                 </select>
             </div>
         </div>
@@ -659,83 +1025,114 @@
 
     <!-- How It Works -->
     <section class="how-it-works" id="how-it-works">
-        <div style="max-width: 1200px; margin: 0 auto; text-align: center; margin-bottom: 3rem;">
-            <h2 style="color: white; font-size: 2.5rem; margin-bottom: 1rem;">Как это работает</h2>
-            <p style="color: rgba(255,255,255,0.9); font-size: 1.2rem; max-width: 700px; margin: 0 auto;">Арендуйте гараж в три простых шага</p>
-        </div>
-        
-        <div class="steps-container">
-            <div class="step">
-                <div class="step-icon">
-                    <i class="fas fa-search-location"></i>
-                </div>
-                <h3>1. Найдите гараж</h3>
-                <p>Укажите местоположение, дату и нужные удобства. На карте появятся все доступные гаражи поблизости.</p>
+        <div class="how-it-works-container">
+            <div class="how-it-works-header">
+                <h2>Как работает ParkBox</h2>
+                <p>Арендуйте гараж в три простых шага — быстро, безопасно и удобно</p>
             </div>
             
-            <div class="step">
-                <div class="step-icon">
-                    <i class="fas fa-lock-open"></i>
+            <div class="steps-container">
+                <div class="step">
+                    <div class="step-icon">
+                        <i class="fas fa-search-location"></i>
+                    </div>
+                    <h3>1. Найдите бокс</h3>
+                    <p>Укажите местоположение, дату и нужные удобства. Используйте фильтры для точного поиска.</p>
+                    <button class="btn btn-outline step-button" onclick="document.getElementById('search').scrollIntoView({behavior: 'smooth'})">
+                        <i class="fas fa-search"></i> Начать поиск
+                    </button>
                 </div>
-                <h3>2. Забронируйте доступ</h3>
-                <p>Выберите подходящий вариант и оплатите онлайн. Получите пин-код для умного замка на указанный телефон.</p>
+                
+                <div class="step">
+                    <div class="step-icon">
+                        <i class="fas fa-lock-open"></i>
+                    </div>
+                    <h3>2. Забронируйте онлайн</h3>
+                    <p>Выберите подходящий вариант, укажите время и оплатите онлайн. Безопасная оплата картой.</p>
+                    <button class="btn btn-outline step-button" onclick="showRegisterModal()">
+                        <i class="fas fa-calendar-check"></i> Зарегистрироваться
+                    </button>
+                </div>
+                
+                <div class="step">
+                    <div class="step-icon">
+                        <i class="fas fa-car"></i>
+                    </div>
+                    <h3>3. Используйте гараж</h3>
+                    <p>Приезжайте в указанное время, откройте гараж с помощью пин-кода из SMS. После использования закройте ворота.</p>
+                    <button class="btn btn-outline step-button" onclick="alert('Скачайте наше мобильное приложение для iOS и Android')">
+                        <i class="fas fa-mobile-alt"></i> Скачать приложение
+                    </button>
+                </div>
             </div>
             
-            <div class="step">
-                <div class="step-icon">
-                    <i class="fas fa-car"></i>
-                </div>
-                <h3>3. Используйте гараж</h3>
-                <p>Приезжайте в указанное время, откройте гараж с помощью пин-кода. После использования просто закройте ворота.</p>
+            <div class="action-buttons">
+                <button class="btn btn-primary" onclick="document.getElementById('search').scrollIntoView({behavior: 'smooth'})">
+                    <i class="fas fa-play-circle"></i> Посмотреть демо
+                </button>
+                <button class="btn btn-secondary" onclick="showRegisterModal()">
+                    <i class="fas fa-user-plus"></i> Начать бесплатно
+                </button>
+                <button class="btn btn-accent" onclick="alert('Свяжитесь с нами для получения специальных условий')">
+                    <i class="fas fa-crown"></i> Для бизнеса
+                </button>
             </div>
         </div>
     </section>
 
     <!-- Footer -->
-    <footer>
+    <footer id="contacts">
         <div class="footer-container">
             <div class="footer-column">
-                <h3>GarageNow</h3>
-                <p>Сервис аренды гаражей на час. Удобно, безопасно, доступно.</p>
-                <div style="display: flex; gap: 1rem; margin-top: 1rem;">
-                    <a href="#" style="color: white; font-size: 1.2rem;"><i class="fab fa-vk"></i></a>
-                    <a href="#" style="color: white; font-size: 1.2rem;"><i class="fab fa-telegram"></i></a>
-                    <a href="#" style="color: white; font-size: 1.2rem;"><i class="fab fa-youtube"></i></a>
+                <div class="logo" style="font-size: 1.5rem; margin-bottom: 1.5rem;">
+                    <i class="fas fa-parking"></i>
+                    <span>ParkBox</span>
+                </div>
+                <p>Сервис аренды гаражей на час. Удобно, безопасно, доступно. Работаем в Москве и Московской области.</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-vk"></i></a>
+                    <a href="#"><i class="fab fa-telegram"></i></a>
+                    <a href="#"><i class="fab fa-youtube"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
                 </div>
             </div>
             
             <div class="footer-column">
                 <h3>Для клиентов</h3>
                 <ul>
-                    <li><a href="#">Как это работает</a></li>
-                    <li><a href="#">Частые вопросы</a></li>
-                    <li><a href="#">Отзывы</a></li>
-                    <li><a href="#">Помощь</a></li>
+                    <li><a href="#how-it-works"><i class="fas fa-play"></i> Как это работает</a></li>
+                    <li><a href="#"><i class="fas fa-question-circle"></i> Частые вопросы</a></li>
+                    <li><a href="#"><i class="fas fa-star"></i> Отзывы</a></li>
+                    <li><a href="#"><i class="fas fa-shield-alt"></i> Безопасность</a></li>
+                    <li><a href="#"><i class="fas fa-mobile-alt"></i> Мобильное приложение</a></li>
                 </ul>
             </div>
             
             <div class="footer-column">
                 <h3>Для владельцев</h3>
                 <ul>
-                    <li><a href="#">Сдать гараж</a></li>
-                    <li><a href="#">Тарифы</a></li>
-                    <li><a href="#">Безопасность</a></li>
-                    <li><a href="#">Партнёрская программа</a></li>
+                    <li><a href="#"><i class="fas fa-home"></i> Сдать гараж</a></li>
+                    <li><a href="#"><i class="fas fa-chart-line"></i> Стать партнёром</a></li>
+                    <li><a href="#"><i class="fas fa-file-contract"></i> Договор аренды</a></li>
+                    <li><a href="#"><i class="fas fa-lock"></i> Гарантии</a></li>
+                    <li><a href="#"><i class="fas fa-percentage"></i> Тарифы и комиссии</a></li>
                 </ul>
             </div>
             
             <div class="footer-column">
                 <h3>Контакты</h3>
                 <ul>
-                    <li><i class="fas fa-phone"></i> 8 (800) 123-45-67</li>
-                    <li><i class="fas fa-envelope"></i> support@garagenow.ru</li>
-                    <li><i class="fas fa-map-marker-alt"></i> Москва, ул. Примерная, 15</li>
+                    <li><a href="tel:+78001234567"><i class="fas fa-phone"></i> 8 (800) 123-45-67</a></li>
+                    <li><a href="mailto:support@parkbox.ru"><i class="fas fa-envelope"></i> support@parkbox.ru</a></li>
+                    <li><a href="#"><i class="fas fa-map-marker-alt"></i> Москва, ул. Парковая, 15</a></li>
+                    <li><a href="#"><i class="fas fa-clock"></i> Поддержка 24/7</a></li>
+                    <li><a href="#"><i class="fas fa-file-pdf"></i> Правовые документы</a></li>
                 </ul>
             </div>
         </div>
         
         <div class="copyright">
-            © 2024 GarageNow. Все права защищены.
+            © 2025 ParkBox. Все права защищены. ОГРН 1234567890123
         </div>
     </footer>
 
@@ -745,19 +1142,25 @@
             <button class="close-modal" id="close-login">&times;</button>
             <div class="modal-header">
                 <h2>Вход в аккаунт</h2>
+                <p style="color: var(--gray); margin-top: 0.5rem;">Войдите для бронирования гаражей</p>
             </div>
             <form id="login-form">
                 <div class="form-group">
-                    <label for="login-email">Email</label>
-                    <input type="email" id="login-email" placeholder="your@email.com" required>
+                    <label for="login-email">Email или телефон</label>
+                    <input type="text" id="login-email" placeholder="your@email.com или +7 (999) 123-45-67" required>
                 </div>
                 <div class="form-group">
                     <label for="login-password">Пароль</label>
                     <input type="password" id="login-password" placeholder="Введите пароль" required>
                 </div>
-                <button type="submit" class="btn btn-primary" style="width: 100%;">Войти</button>
+                <div style="text-align: right; margin-bottom: 1.5rem;">
+                    <a href="#" style="color: var(--primary); text-decoration: none; font-size: 0.9rem;">Забыли пароль?</a>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Войти в аккаунт</button>
             </form>
-            <p style="text-align: center; margin-top: 1rem;">Нет аккаунта? <a href="#" id="switch-to-register">Зарегистрироваться</a></p>
+            <div style="text-align: center; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--gray-light);">
+                <p style="color: var(--gray);">Нет аккаунта? <a href="#" id="switch-to-register" style="color: var(--primary); font-weight: 600; text-decoration: none;">Зарегистрироваться</a></p>
+            </div>
         </div>
     </div>
 
@@ -767,27 +1170,34 @@
             <button class="close-modal" id="close-register">&times;</button>
             <div class="modal-header">
                 <h2>Регистрация</h2>
+                <p style="color: var(--gray); margin-top: 0.5rem;">Создайте аккаунт за 2 минуты</p>
             </div>
             <form id="register-form">
                 <div class="form-group">
-                    <label for="register-name">Имя</label>
-                    <input type="text" id="register-name" placeholder="Ваше имя" required>
-                </div>
-                <div class="form-group">
-                    <label for="register-email">Email</label>
-                    <input type="email" id="register-email" placeholder="your@email.com" required>
+                    <label for="register-name">Имя и фамилия</label>
+                    <input type="text" id="register-name" placeholder="Иван Иванов" required>
                 </div>
                 <div class="form-group">
                     <label for="register-phone">Телефон</label>
                     <input type="tel" id="register-phone" placeholder="+7 (999) 123-45-67" required>
                 </div>
                 <div class="form-group">
-                    <label for="register-password">Пароль</label>
-                    <input type="password" id="register-password" placeholder="Не менее 6 символов" required>
+                    <label for="register-email">Email</label>
+                    <input type="email" id="register-email" placeholder="your@email.com" required>
                 </div>
-                <button type="submit" class="btn btn-primary" style="width: 100%;">Зарегистрироваться</button>
+                <div class="form-group">
+                    <label for="register-password">Пароль</label>
+                    <input type="password" id="register-password" placeholder="Не менее 8 символов" required>
+                </div>
+                <div class="checkbox-item" style="margin-bottom: 1.5rem;">
+                    <input type="checkbox" id="agree-terms" required>
+                    <label for="agree-terms" style="font-weight: normal;">Я соглашаюсь с <a href="#" style="color: var(--primary);">Условиями использования</a> и <a href="#" style="color: var(--primary);">Политикой конфиденциальности</a></label>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Создать аккаунт</button>
             </form>
-            <p style="text-align: center; margin-top: 1rem;">Уже есть аккаунт? <a href="#" id="switch-to-login">Войти</a></p>
+            <div style="text-align: center; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--gray-light);">
+                <p style="color: var(--gray);">Уже есть аккаунт? <a href="#" id="switch-to-login" style="color: var(--primary); font-weight: 600; text-decoration: none;">Войти</a></p>
+            </div>
         </div>
     </div>
 
@@ -810,68 +1220,74 @@
             {
                 id: 1,
                 title: "Тёплый гараж в ЦАО",
-                price: 300,
+                price: 350,
                 rating: 4.8,
-                reviews: 24,
+                reviews: 42,
                 location: "Центральный округ, 5 мин от метро",
                 image: "https://images.unsplash.com/photo-1621967299229-c6e7085b9b73?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
                 features: ["вода", "электричество", "отопление", "освещение"],
-                coordinates: [55.7558, 37.6173]
+                coordinates: [55.7558, 37.6173],
+                available: true
             },
             {
                 id: 2,
-                title: "Современный бокс с инструментами",
-                price: 450,
+                title: "Премиум бокс с инструментами",
+                price: 550,
                 rating: 4.9,
-                reviews: 42,
+                reviews: 67,
                 location: "ЮЗАО, 7 мин от метро",
                 image: "https://images.unsplash.com/photo-1549399542-7e3f8b79c341?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
                 features: ["вода", "электричество", "инструменты", "мойка"],
-                coordinates: [55.6540, 37.5980]
+                coordinates: [55.6540, 37.5980],
+                available: true
             },
             {
                 id: 3,
                 title: "Просторный гараж для микроавтобуса",
-                price: 550,
+                price: 650,
                 rating: 4.7,
-                reviews: 18,
+                reviews: 28,
                 location: "САО, 10 мин от метро",
                 image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
                 features: ["электричество", "отопление", "видеонаблюдение"],
-                coordinates: [55.8030, 37.5250]
+                coordinates: [55.8030, 37.5250],
+                available: true
             },
             {
                 id: 4,
                 title: "Эконом-вариант в спальном районе",
-                price: 200,
+                price: 250,
                 rating: 4.5,
-                reviews: 31,
+                reviews: 51,
                 location: "ВАО, 3 мин от метро",
                 image: "https://images.unsplash.com/photo-1600573472592-46d7c1c10dc2?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
                 features: ["электричество", "освещение"],
-                coordinates: [55.7870, 37.7660]
+                coordinates: [55.7870, 37.7660],
+                available: true
             },
             {
                 id: 5,
-                title: "Премиум бокс с мойкой",
-                price: 700,
+                title: "Бокс с мойкой и подъёмником",
+                price: 850,
                 rating: 4.9,
-                reviews: 56,
+                reviews: 89,
                 location: "ЗАО, 5 мин от ТТК",
-                image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-                features: ["вода", "электричество", "отопление", "мойка", "инструменты"],
-                coordinates: [55.7360, 37.4660]
+                image: "https://images.unsplash.com/photo-1551524165-6b6e5a6166f3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+                features: ["вода", "электричество", "отопление", "мойка", "инструменты", "подъёмник"],
+                coordinates: [55.7360, 37.4660],
+                available: true
             },
             {
                 id: 6,
-                title: "Гараж с подъёмником",
-                price: 800,
-                rating: 5.0,
-                reviews: 29,
+                title: "Современный гараж с охраной",
+                price: 450,
+                rating: 4.8,
+                reviews: 36,
                 location: "ЮАО, 8 мин от метро",
-                image: "https://images.unsplash.com/photo-1551524165-6b6e5a6166f3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-                features: ["вода", "электричество", "подъёмник", "инструменты"],
-                coordinates: [55.6140, 37.7150]
+                image: "https://images.unsplash.com/photo-1549399542-7e3f8b79c341?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+                features: ["вода", "электричество", "охрана", "wi-fi"],
+                coordinates: [55.6140, 37.7150],
+                available: true
             }
         ];
 
@@ -880,24 +1296,45 @@
         let markers = [];
         
         function initMap() {
-            map = L.map('map').setView([55.7558, 37.6173], 11);
+            // Remove Leaflet attribution
+            delete L.Control.Attribution.prototype.options.prefix;
             
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '© OpenStreetMap contributors'
+            map = L.map('map', {
+                attributionControl: false,
+                zoomControl: false
+            }).setView([55.7558, 37.6173], 11);
+            
+            // Add custom tile layer without attribution
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+                maxZoom: 19,
+            }).addTo(map);
+            
+            // Custom zoom control
+            L.control.zoom({
+                position: 'topright'
             }).addTo(map);
             
             // Add markers for each garage
             garages.forEach(garage => {
-                const marker = L.marker(garage.coordinates)
-                    .addTo(map)
-                    .bindPopup(`
-                        <strong>${garage.title}</strong><br>
-                        ${garage.location}<br>
-                        <b>${garage.price} ₽/час</b><br>
-                        <button onclick="showBookingModal(${garage.id})" class="btn btn-primary" style="margin-top: 5px; padding: 5px 10px; font-size: 12px;">
+                const marker = L.marker(garage.coordinates, {
+                    icon: L.divIcon({
+                        className: 'custom-marker',
+                        html: `<div style="background: linear-gradient(135deg, var(--primary), var(--secondary)); width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; border: 3px solid white; box-shadow: 0 2px 5px rgba(0,0,0,0.2);">${garage.price}</div>`,
+                        iconSize: [32, 32],
+                        iconAnchor: [16, 32]
+                    })
+                })
+                .addTo(map)
+                .bindPopup(`
+                    <div style="padding: 10px;">
+                        <h4 style="margin: 0 0 5px 0; color: var(--primary);">${garage.title}</h4>
+                        <p style="margin: 0 0 10px 0; font-size: 14px; color: var(--gray);">${garage.location}</p>
+                        <p style="margin: 0 0 10px 0; font-size: 18px; font-weight: bold; color: var(--dark);">${garage.price} ₽/час</p>
+                        <button onclick="showBookingModal(${garage.id})" style="background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; width: 100%; font-weight: 600;">
                             Забронировать
                         </button>
-                    `);
+                    </div>
+                `);
                 markers.push(marker);
             });
         }
@@ -911,7 +1348,9 @@
                 const card = document.createElement('div');
                 card.className = 'garage-card';
                 card.innerHTML = `
-                    <div class="garage-image" style="background-image: url('${garage.image}')"></div>
+                    <div class="garage-image" style="background-image: url('${garage.image}')">
+                        ${garage.available ? '<div class="garage-badge">Свободно сейчас</div>' : ''}
+                    </div>
                     <div class="garage-content">
                         <div class="garage-header">
                             <div class="garage-title">${garage.title}</div>
@@ -922,26 +1361,26 @@
                             ${garage.location}
                         </div>
                         <div class="garage-features">
-                            ${garage.features.map(feature => {
-                                let icon = 'fas fa-check';
+                            ${garage.features.map((feature, index) => {
                                 let className = 'feature-tag';
-                                if (feature === 'вода') {
-                                    icon = 'fas fa-tint';
-                                    className += ' water';
-                                } else if (feature === 'электричество') {
-                                    icon = 'fas fa-bolt';
-                                    className += ' electricity';
-                                } else if (feature === 'инструменты') {
-                                    icon = 'fas fa-tools';
-                                } else if (feature === 'мойка') {
-                                    icon = 'fas fa-car-wash';
-                                }
+                                if (index % 3 === 0) className += ' primary';
+                                else if (index % 3 === 1) className += ' success';
+                                else className += ' accent';
+                                
+                                let icon = 'fas fa-check';
+                                if (feature === 'вода') icon = 'fas fa-tint';
+                                else if (feature === 'электричество') icon = 'fas fa-bolt';
+                                else if (feature === 'инструменты') icon = 'fas fa-tools';
+                                else if (feature === 'мойка') icon = 'fas fa-car-wash';
+                                else if (feature === 'охрана') icon = 'fas fa-shield-alt';
+                                else if (feature === 'wi-fi') icon = 'fas fa-wifi';
+                                
                                 return `<span class="${className}"><i class="${icon}"></i>${feature}</span>`;
                             }).join('')}
                         </div>
                         <div class="garage-actions">
                             <div class="rating">
-                                <i class="fas fa-star"></i> ${garage.rating} (${garage.reviews})
+                                <i class="fas fa-star"></i> ${garage.rating} <span style="color: var(--gray); font-weight: normal;">(${garage.reviews} отзывов)</span>
                             </div>
                             <button class="btn btn-primary btn-small" onclick="showBookingModal(${garage.id})">
                                 <i class="fas fa-calendar-check"></i>Забронировать
@@ -956,10 +1395,12 @@
         // Modal functions
         function showLoginModal() {
             document.getElementById('login-modal').style.display = 'flex';
+            document.body.style.overflow = 'hidden';
         }
 
         function showRegisterModal() {
             document.getElementById('register-modal').style.display = 'flex';
+            document.body.style.overflow = 'hidden';
         }
 
         function showBookingModal(garageId) {
@@ -968,18 +1409,27 @@
             const content = document.getElementById('booking-content');
             
             content.innerHTML = `
-                <h3>${garage.title}</h3>
-                <p><i class="fas fa-map-marker-alt"></i> ${garage.location}</p>
-                <p><strong>${garage.price} ₽/час</strong></p>
+                <h3 style="margin-bottom: 1rem;">${garage.title}</h3>
+                <p style="color: var(--gray); margin-bottom: 1.5rem;"><i class="fas fa-map-marker-alt"></i> ${garage.location}</p>
+                <div style="background: var(--gray-light); padding: 1rem; border-radius: 12px; margin-bottom: 1.5rem;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                        <span>Цена за час:</span>
+                        <span style="font-weight: bold;">${garage.price} ₽</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; font-size: 0.9rem; color: var(--gray);">
+                        <span>Рейтинг:</span>
+                        <span><i class="fas fa-star" style="color: var(--accent);"></i> ${garage.rating} (${garage.reviews} отзывов)</span>
+                    </div>
+                </div>
                 
                 <div class="form-group">
                     <label>Дата и время начала</label>
-                    <input type="datetime-local" id="booking-date" value="2024-05-20T10:00" class="full-width">
+                    <input type="datetime-local" id="booking-date" value="2025-01-20T10:00" style="width: 100%; padding: 0.75rem; border-radius: 8px; border: 2px solid var(--gray-light);">
                 </div>
                 
                 <div class="form-group">
                     <label>Длительность аренды</label>
-                    <select id="booking-duration" class="full-width">
+                    <select id="booking-duration" style="width: 100%; padding: 0.75rem; border-radius: 8px; border: 2px solid var(--gray-light);">
                         <option value="1">1 час</option>
                         <option value="2" selected>2 часа</option>
                         <option value="4">4 часа</option>
@@ -988,21 +1438,30 @@
                     </select>
                 </div>
                 
-                <div class="form-group">
-                    <label>Итого к оплате: <span id="booking-total">${garage.price * 2}</span> ₽</span></label>
+                <div style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(16, 185, 129, 0.1)); padding: 1.5rem; border-radius: 12px; margin: 2rem 0;">
+                    <div style="display: flex; justify-content: space-between; font-size: 1.2rem; font-weight: bold;">
+                        <span>Итого к оплате:</span>
+                        <span id="booking-total">${garage.price * 2} ₽</span>
+                    </div>
+                    <p style="color: var(--gray); font-size: 0.9rem; margin-top: 0.5rem;">Включая все комиссии и страховку</p>
                 </div>
                 
-                <button class="btn btn-primary" style="width: 100%;" onclick="confirmBooking(${garageId})">
-                    <i class="fas fa-lock"></i> Перейти к оплате
+                <button class="btn btn-primary" style="width: 100%; padding: 1rem; font-size: 1.1rem;" onclick="confirmBooking(${garageId})">
+                    <i class="fas fa-lock"></i> Перейти к безопасной оплате
                 </button>
+                
+                <p style="text-align: center; margin-top: 1rem; color: var(--gray); font-size: 0.9rem;">
+                    <i class="fas fa-shield-alt"></i> Безопасная оплата через Тинькофф
+                </p>
             `;
             
             modal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
             
             // Update total price when duration changes
             document.getElementById('booking-duration').addEventListener('change', function() {
                 const duration = parseInt(this.value);
-                document.getElementById('booking-total').textContent = garage.price * duration;
+                document.getElementById('booking-total').textContent = (garage.price * duration) + ' ₽';
             });
         }
 
@@ -1011,12 +1470,13 @@
             const duration = document.getElementById('booking-duration').value;
             const total = garage.price * duration;
             
-            alert(`Бронирование подтверждено!\n\n${garage.title}\nСумма: ${total} ₽\n\nПосле оплаты вы получите SMS с кодом доступа.`);
+            alert(`✅ Бронирование подтверждено!\n\n${garage.title}\nСумма: ${total} ₽\n\nПосле оплаты вы получите SMS с кодом доступа.\n\nКод доступа будет активен за 15 минут до начала аренды.`);
             closeModal('booking-modal');
         }
 
         function closeModal(modalId) {
             document.getElementById(modalId).style.display = 'none';
+            document.body.style.overflow = 'auto';
         }
 
         // Event listeners
@@ -1025,13 +1485,14 @@
             initMap();
             renderGarages();
             
+            // Hero button
+            document.getElementById('find-garage-btn').addEventListener('click', function() {
+                document.getElementById('search').scrollIntoView({ behavior: 'smooth' });
+            });
+            
             // Modal buttons
             document.getElementById('login-btn').addEventListener('click', showLoginModal);
             document.getElementById('register-btn').addEventListener('click', showRegisterModal);
-            document.getElementById('become-owner-link').addEventListener('click', function(e) {
-                e.preventDefault();
-                alert('Функция "Сдать гараж" в разработке. Скоро будет доступна!');
-            });
             
             // Close buttons
             document.getElementById('close-login').addEventListener('click', () => closeModal('login-modal'));
@@ -1054,14 +1515,26 @@
             // Form submissions
             document.getElementById('login-form').addEventListener('submit', function(e) {
                 e.preventDefault();
-                alert('Вход выполнен успешно!');
+                alert('✅ Вход выполнен успешно!');
                 closeModal('login-modal');
             });
             
             document.getElementById('register-form').addEventListener('submit', function(e) {
                 e.preventDefault();
-                alert('Регистрация прошла успешно! Проверьте вашу почту для подтверждения.');
+                alert('✅ Регистрация прошла успешно! Проверьте вашу почту для подтверждения.');
                 closeModal('register-modal');
+            });
+            
+            // View buttons
+            document.querySelectorAll('.view-buttons button').forEach(button => {
+                button.addEventListener('click', function() {
+                    document.querySelectorAll('.view-buttons button').forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    if (this.textContent.includes('Список')) {
+                        document.getElementById('garages').scrollIntoView({ behavior: 'smooth' });
+                    }
+                });
             });
             
             // Search button
@@ -1088,31 +1561,42 @@
                 
                 if (filteredGarages.length === 0) {
                     container.innerHTML = `
-                        <div style="grid-column: 1/-1; text-align: center; padding: 3rem; background: white; border-radius: 16px;">
-                            <i class="fas fa-search" style="font-size: 3rem; color: #ccc; margin-bottom: 1rem;"></i>
-                            <h3>Ничего не найдено</h3>
-                            <p>Попробуйте изменить параметры поиска</p>
+                        <div style="grid-column: 1/-1; text-align: center; padding: 4rem; background: white; border-radius: 20px; box-shadow: var(--card-shadow);">
+                            <div style="width: 80px; height: 80px; background: var(--gray-light); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem;">
+                                <i class="fas fa-search" style="font-size: 2rem; color: var(--gray);"></i>
+                            </div>
+                            <h3 style="margin-bottom: 0.5rem; color: var(--dark);">Ничего не найдено</h3>
+                            <p style="color: var(--gray); max-width: 400px; margin: 0 auto;">Попробуйте изменить параметры поиска или выберите другую дату</p>
                         </div>
                     `;
                 } else {
                     // Update button text
-                    this.innerHTML = `<i class="fas fa-search"></i>Показать ${filteredGarages.length} свободных гаражей`;
+                    this.innerHTML = `<i class="fas fa-search"></i>Найдено ${filteredGarages.length} боксов`;
                     
                     // Update markers on map
                     markers.forEach(marker => map.removeLayer(marker));
                     markers = [];
                     
                     filteredGarages.forEach(garage => {
-                        const marker = L.marker(garage.coordinates)
-                            .addTo(map)
-                            .bindPopup(`<strong>${garage.title}</strong><br>${garage.price} ₽/час`);
+                        const marker = L.marker(garage.coordinates, {
+                            icon: L.divIcon({
+                                className: 'custom-marker',
+                                html: `<div style="background: linear-gradient(135deg, var(--primary), var(--secondary)); width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; border: 3px solid white; box-shadow: 0 2px 5px rgba(0,0,0,0.2);">${garage.price}</div>`,
+                                iconSize: [32, 32],
+                                iconAnchor: [16, 32]
+                            })
+                        })
+                        .addTo(map)
+                        .bindPopup(`<strong>${garage.title}</strong><br>${garage.price} ₽/час`);
                         markers.push(marker);
                         
                         // Add card
                         const card = document.createElement('div');
                         card.className = 'garage-card';
                         card.innerHTML = `
-                            <div class="garage-image" style="background-image: url('${garage.image}')"></div>
+                            <div class="garage-image" style="background-image: url('${garage.image}')">
+                                <div class="garage-badge">Свободно сейчас</div>
+                            </div>
                             <div class="garage-content">
                                 <div class="garage-header">
                                     <div class="garage-title">${garage.title}</div>
@@ -1123,11 +1607,17 @@
                                     ${garage.location}
                                 </div>
                                 <div class="garage-features">
-                                    ${garage.features.map(feature => `<span class="feature-tag"><i class="fas fa-check"></i>${feature}</span>`).join('')}
+                                    ${garage.features.map((feature, index) => {
+                                        let className = 'feature-tag';
+                                        if (index % 3 === 0) className += ' primary';
+                                        else if (index % 3 === 1) className += ' success';
+                                        else className += ' accent';
+                                        return `<span class="${className}"><i class="fas fa-check"></i>${feature}</span>`;
+                                    }).join('')}
                                 </div>
                                 <div class="garage-actions">
                                     <div class="rating">
-                                        <i class="fas fa-star"></i> ${garage.rating} (${garage.reviews})
+                                        <i class="fas fa-star"></i> ${garage.rating} <span style="color: var(--gray); font-weight: normal;">(${garage.reviews})</span>
                                     </div>
                                     <button class="btn btn-primary btn-small" onclick="showBookingModal(${garage.id})">
                                         <i class="fas fa-calendar-check"></i>Забронировать
@@ -1142,9 +1632,12 @@
                     if (filteredGarages.length > 0) {
                         const coordinates = filteredGarages.map(g => g.coordinates);
                         const bounds = L.latLngBounds(coordinates);
-                        map.fitBounds(bounds);
+                        map.fitBounds(bounds, { padding: [50, 50] });
                     }
                 }
+                
+                // Show notification
+                showNotification(`Найдено ${filteredGarages.length} боксов по вашим критериям`);
             });
             
             // Sort functionality
@@ -1155,23 +1648,104 @@
                     garages.sort((a, b) => a.price - b.price);
                 } else if (sortBy === 'rating') {
                     garages.sort((a, b) => b.rating - a.rating);
+                } else if (sortBy === 'popularity') {
+                    garages.sort((a, b) => b.reviews - a.reviews);
                 }
                 
                 renderGarages();
+                showNotification(`Сортировка изменена: ${this.options[this.selectedIndex].text}`);
             });
             
             // Close modals when clicking outside
             window.addEventListener('click', function(e) {
                 if (e.target.classList.contains('modal')) {
-                    e.target.style.display = 'none';
+                    closeModal(e.target.id);
                 }
             });
+            
+            // Smooth scroll for navigation links
+            document.querySelectorAll('nav a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    if (this.getAttribute('href').startsWith('#') && this.getAttribute('href').length > 1) {
+                        e.preventDefault();
+                        const targetId = this.getAttribute('href').substring(1);
+                        const targetElement = document.getElementById(targetId);
+                        if (targetElement) {
+                            targetElement.scrollIntoView({ behavior: 'smooth' });
+                        }
+                    }
+                });
+            });
+            
+            // "Learn more" button
+            document.getElementById('learn-more-btn').addEventListener('click', function() {
+                alert('🎬 Демо-видео будет доступно в ближайшее время!\n\nСледите за обновлениями в наших социальных сетях.');
+            });
+            
+            // "Become owner" link
+            document.getElementById('become-owner-link').addEventListener('click', function(e) {
+                e.preventDefault();
+                showRegisterModal();
+                setTimeout(() => {
+                    alert('💰 Начните зарабатывать на своём гараже!\n\nПосле регистрации вы сможете добавить свой гараж и получать пассивный доход.');
+                }, 500);
+            });
         });
+
+        // Show notification function
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: white;
+                color: var(--dark);
+                padding: 1rem 1.5rem;
+                border-radius: 12px;
+                box-shadow: var(--hover-shadow);
+                border-left: 4px solid var(--success);
+                z-index: 3000;
+                animation: slideIn 0.3s ease;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                max-width: 350px;
+            `;
+            
+            notification.innerHTML = `
+                <i class="fas fa-check-circle" style="color: var(--success); font-size: 1.2rem;"></i>
+                <span>${message}</span>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
+        // Add CSS for notification animations
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            @keyframes slideOut {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(100%); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
 
         // Make functions globally available
         window.showBookingModal = showBookingModal;
         window.confirmBooking = confirmBooking;
         window.closeModal = closeModal;
+        window.showLoginModal = showLoginModal;
+        window.showRegisterModal = showRegisterModal;
     </script>
 </body>
 </html>
